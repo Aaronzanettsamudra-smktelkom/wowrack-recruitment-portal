@@ -56,7 +56,7 @@ export default function NewsDetail() {
     <div className="min-h-screen bg-background">
       <PublicHeader />
 
-      <article className="pt-24">
+      <article>
         {/* Hero Image */}
         <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
           <img
