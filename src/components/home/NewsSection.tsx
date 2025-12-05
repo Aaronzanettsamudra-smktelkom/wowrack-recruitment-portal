@@ -30,31 +30,35 @@ export function NewsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300"
             >
-              <div className="aspect-video overflow-hidden">
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="outline" className="text-xs">
-                    {article.category}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(article.date).toLocaleDateString()}
-                  </span>
+              <Link
+                to={`/news/${article.id}`}
+                className="group block bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300"
+              >
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
-                <h3 className="font-semibold text-foreground group-hover:text-secondary transition-colors mb-2">
-                  {article.title}
-                </h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {article.excerpt}
-                </p>
-              </div>
+                <div className="p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="outline" className="text-xs">
+                      {article.category}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(article.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-foreground group-hover:text-secondary transition-colors mb-2">
+                    {article.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {article.excerpt}
+                  </p>
+                </div>
+              </Link>
             </motion.article>
           ))}
         </div>
