@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobFilters } from "@/components/jobs/JobFilters";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import { jobs } from "@/lib/mockData";
 import { motion } from "framer-motion";
 
@@ -32,8 +34,10 @@ export default function Careers() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PublicHeader />
+      
       {/* Hero */}
-      <section className="gradient-hero py-16 md:py-24">
+      <section className="gradient-hero pt-32 pb-16">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -91,6 +95,8 @@ export default function Careers() {
           </div>
         </div>
       </section>
+
+      <PublicFooter />
     </div>
   );
 }
