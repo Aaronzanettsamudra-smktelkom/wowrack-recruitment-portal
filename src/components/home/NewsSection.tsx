@@ -33,7 +33,7 @@ export function NewsSection() {
             >
               <Link
                 to={`/news/${article.id}`}
-                className="group block bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300"
+                className="group flex flex-col bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full"
               >
                 <div className="aspect-video overflow-hidden">
                   <img
@@ -42,7 +42,7 @@ export function NewsSection() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-5">
+                <div className="p-5 flex flex-col flex-1">
                   <div className="flex items-center gap-2 mb-3">
                     <Badge variant="outline" className="text-xs">
                       {article.category}
@@ -54,7 +54,7 @@ export function NewsSection() {
                   <h3 className="font-semibold text-foreground group-hover:text-secondary transition-colors mb-2">
                     {article.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
                     {article.excerpt}
                   </p>
                 </div>

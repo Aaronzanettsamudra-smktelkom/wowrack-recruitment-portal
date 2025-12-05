@@ -28,7 +28,7 @@ export default function News() {
       <PublicHeader />
       
       {/* Hero */}
-      <section className="bg-gradient-hero pt-32 pb-16">
+      <section className="bg-gradient-hero pt-28 pb-10">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -97,7 +97,7 @@ export default function News() {
                 >
                   <Link
                     to={`/news/${article.id}`}
-                    className="group block bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300"
+                    className="group flex flex-col bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full"
                   >
                     <div className="aspect-video overflow-hidden">
                       <img
@@ -106,7 +106,7 @@ export default function News() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center gap-3 mb-3">
                         <Badge variant="secondary" className="text-xs">
                           {article.category}
@@ -119,7 +119,7 @@ export default function News() {
                       <h3 className="font-semibold text-lg text-foreground group-hover:text-secondary transition-colors mb-2">
                         {article.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-3">
+                      <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
                         {article.excerpt}
                       </p>
                     </div>
