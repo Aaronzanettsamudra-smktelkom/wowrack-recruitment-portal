@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 export default function CandidateLogin() {
   const navigate = useNavigate();
@@ -23,7 +24,20 @@ export default function CandidateLogin() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative">
+      {/* Back Button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        asChild
+        className="absolute top-6 left-6 z-10"
+      >
+        <Link to="/">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Link>
+      </Button>
+
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <motion.div
