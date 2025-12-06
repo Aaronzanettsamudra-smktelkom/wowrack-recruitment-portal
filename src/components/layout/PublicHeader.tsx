@@ -43,7 +43,7 @@ export function PublicHeader() {
 
         <div className="hidden md:flex items-center gap-3">
           <Button variant="ghost" asChild>
-            <Link to="/login">Login</Link>
+            <Link to="/candidate-login">Login</Link>
           </Button>
           <Button variant="secondary" asChild>
             <Link to="/careers">See Open Positions</Link>
@@ -85,7 +85,7 @@ export function PublicHeader() {
               ))}
               <div className="pt-2 border-t border-border mt-2 flex flex-col gap-2">
                 <Button variant="ghost" asChild className="justify-start">
-                  <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
+                  <Link to="/candidate-login" onClick={() => setIsOpen(false)}>Login</Link>
                 </Button>
                 <Button variant="secondary" asChild>
                   <Link to="/careers" onClick={() => setIsOpen(false)}>See Open Positions</Link>

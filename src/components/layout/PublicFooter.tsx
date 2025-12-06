@@ -23,6 +23,7 @@ export function PublicFooter() {
               <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
               <li><Link to="/news" className="hover:text-primary transition-colors">News & Culture</Link></li>
               <li><Link to="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
+              <li><Link to="/login" className="hover:text-primary transition-colors">HR Portal</Link></li>
             </ul>
           </div>
 
@@ -30,7 +31,7 @@ export function PublicFooter() {
             <h4 className="font-semibold mb-4">For Candidates</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/careers" className="hover:text-primary transition-colors">Browse Jobs</Link></li>
-              <li><Link to="/login" className="hover:text-primary transition-colors">Candidate Portal</Link></li>
+              <li><Link to="/candidate-login" className="hover:text-primary transition-colors">Candidate Portal</Link></li>
               <li><Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
             </ul>
           </div>

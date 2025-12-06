@@ -11,6 +11,7 @@ import QuickApply from "./pages/QuickApply";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import Login from "./pages/Login";
+import CandidateLogin from "./pages/CandidateLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/candidate-login" element={<CandidateLogin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
