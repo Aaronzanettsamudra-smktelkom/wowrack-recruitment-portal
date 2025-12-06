@@ -5,8 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { PublicFooter } from "@/components/layout/PublicFooter";
 
 export default function CandidateLogin() {
   const navigate = useNavigate();
@@ -25,21 +23,25 @@ export default function CandidateLogin() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <PublicHeader />
-      
-      <main className="flex-1 flex items-center justify-center px-8 py-16">
+    <div className="min-h-screen flex">
+      {/* Left Side - Form */}
+      <div className="flex-1 flex items-center justify-center p-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           className="w-full max-w-md"
         >
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold mb-2">Candidate Portal</h1>
-            <p className="text-muted-foreground">
-              Sign in to track your applications and manage your profile
-            </p>
-          </div>
+          <Link to="/" className="flex items-center gap-2 mb-8">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
+              HR
+            </div>
+            <span className="text-xl font-bold text-foreground">TalentHub</span>
+          </Link>
+
+          <h1 className="text-2xl font-bold mb-2">Candidate Portal</h1>
+          <p className="text-muted-foreground mb-8">
+            Sign in to track your applications and manage your profile
+          </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
@@ -69,10 +71,10 @@ export default function CandidateLogin() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center space-y-4">
+          <div className="mt-8 text-center space-y-4">
             <Link 
               to="/forgot-password" 
-              className="text-sm text-muted-foreground hover:text-primary"
+              className="text-sm text-muted-foreground hover:text-primary block"
             >
               Forgot your password?
             </Link>
@@ -84,9 +86,24 @@ export default function CandidateLogin() {
             </p>
           </div>
         </motion.div>
-      </main>
+      </div>
 
-      <PublicFooter />
+      {/* Right Side - Hero */}
+      <div className="hidden lg:flex flex-1 gradient-hero items-center justify-center p-12">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="max-w-lg text-center"
+        >
+          <h2 className="text-3xl font-bold text-primary-foreground mb-4">
+            Your Career Journey Starts Here
+          </h2>
+          <p className="text-primary-foreground/80 text-lg">
+            Access your personalized dashboard, track applications, and discover new opportunities tailored just for you.
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 }
