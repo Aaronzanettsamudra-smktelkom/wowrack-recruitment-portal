@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-type UserRole = "manager" | "admin";
+type UserRole = "hr" | "manager" | "admin";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,6 +23,9 @@ export default function Login() {
     toast.success("Login successful!");
     
     switch (role) {
+      case "hr":
+        navigate("/hr");
+        break;
       case "manager":
         navigate("/manager");
         break;
@@ -48,14 +51,51 @@ export default function Login() {
             <span className="text-xl font-bold text-foreground">TalentHub</span>
           </Link>
 
-          <h1 className="text-2xl font-bold mb-2">HR Portal Login</h1>
-          <p className="text-muted-foreground mb-8">Sign in to access the HR management system</p>
+          <h1 className="text-2xl font-bold mb-2">Wowrack Recruitment Portal</h1>
+          <p className="text-muted-foreground mb-8">Sign in to access the recruitment management system</p>
 
-          <Tabs defaultValue="manager" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
+          <Tabs defaultValue="hr" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-6">
+              <TabsTrigger value="hr">HR</TabsTrigger>
               <TabsTrigger value="manager">Hiring Manager</TabsTrigger>
-              <TabsTrigger value="admin">HR Admin</TabsTrigger>
+              <TabsTrigger value="admin">Admin</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="hr">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleLogin("hr");
+                }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="email-hr">HR Email</Label>
+                  <Input
+                    id="email-hr"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="hr@company.com"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password-hr">Password</Label>
+                  <Input
+                    id="password-hr"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Signing in..." : "Sign in as HR"}
+                </Button>
+              </form>
+            </TabsContent>
 
             <TabsContent value="manager">
               <form
