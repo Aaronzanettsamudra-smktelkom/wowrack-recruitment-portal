@@ -28,7 +28,7 @@ export default function CandidateLogin() {
     <div className="min-h-screen flex flex-col bg-background">
       <PublicHeader />
       
-      <main className="flex-1 flex items-center justify-center p-8">
+      <main className="flex-1 flex items-center justify-center px-8 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
