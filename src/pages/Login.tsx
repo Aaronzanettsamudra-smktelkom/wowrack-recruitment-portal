@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-type UserRole = "candidate" | "manager" | "admin";
+type UserRole = "manager" | "admin";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,9 +23,6 @@ export default function Login() {
     toast.success("Login successful!");
     
     switch (role) {
-      case "candidate":
-        navigate("/candidate");
-        break;
       case "manager":
         navigate("/manager");
         break;
@@ -51,57 +48,14 @@ export default function Login() {
             <span className="text-xl font-bold text-foreground">TalentHub</span>
           </Link>
 
-          <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
-          <p className="text-muted-foreground mb-8">Sign in to your account to continue</p>
+          <h1 className="text-2xl font-bold mb-2">HR Portal Login</h1>
+          <p className="text-muted-foreground mb-8">Sign in to access the HR management system</p>
 
-          <Tabs defaultValue="candidate" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="candidate">Candidate</TabsTrigger>
-              <TabsTrigger value="manager">Manager</TabsTrigger>
-              <TabsTrigger value="admin">Admin</TabsTrigger>
+          <Tabs defaultValue="manager" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="manager">Hiring Manager</TabsTrigger>
+              <TabsTrigger value="admin">HR Admin</TabsTrigger>
             </TabsList>
-
-            <TabsContent value="candidate">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleLogin("candidate");
-                }}
-                className="space-y-4"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor="email-candidate">Email</Label>
-                  <Input
-                    id="email-candidate"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password-candidate">Password</Label>
-                  <Input
-                    id="password-candidate"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign in as Candidate"}
-                </Button>
-              </form>
-              <p className="text-center text-sm text-muted-foreground mt-4">
-                Don't have an account?{" "}
-                <Link to="/careers" className="text-secondary hover:underline">
-                  Apply to a job
-                </Link>
-              </p>
-            </TabsContent>
 
             <TabsContent value="manager">
               <form
@@ -193,10 +147,10 @@ export default function Login() {
           className="max-w-lg text-center"
         >
           <h2 className="text-3xl font-bold text-primary-foreground mb-4">
-            Your Career Journey Starts Here
+            HR Management Portal
           </h2>
           <p className="text-primary-foreground/80 text-lg">
-            Access your personalized dashboard, track applications, and discover new opportunities tailored just for you.
+            Manage candidates, review applications, and streamline your hiring process with TalentHub.
           </p>
         </motion.div>
       </div>
