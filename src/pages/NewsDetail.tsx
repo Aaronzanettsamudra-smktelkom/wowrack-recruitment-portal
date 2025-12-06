@@ -67,7 +67,7 @@ export default function NewsDetail() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
 
-        <div className="container relative -mt-20 pb-16">
+        <div className="container relative -mt-24 pb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
