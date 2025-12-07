@@ -94,8 +94,8 @@ export default function CandidateLogin() {
             </Link>
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link to="/careers" className="text-primary hover:underline">
-                Apply to a job
+              <Link to="/candidate-register" className="text-primary hover:underline font-medium">
+                Create an account
               </Link>
             </p>
           </div>
