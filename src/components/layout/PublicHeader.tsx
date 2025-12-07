@@ -1,8 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, User } from "lucide-react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -12,7 +15,27 @@ const navLinks = [
 
 export function PublicHeader() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const getInitials = (email: string) => {
+    return email.substring(0, 2).toUpperCase();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/80 backdrop-blur-lg">
@@ -42,12 +65,28 @@ export function PublicHeader() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" asChild>
-            <Link to="/candidate-login">Login</Link>
-          </Button>
-          <Button variant="secondary" asChild>
-            <Link to="/careers">See Open Positions</Link>
-          </Button>
+          {user ? (
+            <>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.user_metadata?.avatar_url} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {getInitials(user.email || "U")}
+                </AvatarFallback>
+              </Avatar>
+              <Button variant="secondary" asChild>
+                <Link to="/candidate-dashboard">Go to Dashboard</Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/candidate-login">Login</Link>
+              </Button>
+              <Button variant="secondary" asChild>
+                <Link to="/candidate-login?mode=register">Register</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -84,12 +123,31 @@ export function PublicHeader() {
                 </Link>
               ))}
               <div className="pt-2 border-t border-border mt-2 flex flex-col gap-2">
-                <Button variant="ghost" asChild className="justify-start">
-                  <Link to="/candidate-login" onClick={() => setIsOpen(false)}>Login</Link>
-                </Button>
-                <Button variant="secondary" asChild>
-                  <Link to="/careers" onClick={() => setIsOpen(false)}>See Open Positions</Link>
-                </Button>
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-2 px-3 py-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.user_metadata?.avatar_url} />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          {getInitials(user.email || "U")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm text-muted-foreground">{user.email}</span>
+                    </div>
+                    <Button variant="secondary" asChild>
+                      <Link to="/candidate-dashboard" onClick={() => setIsOpen(false)}>Go to Dashboard</Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" asChild className="justify-start">
+                      <Link to="/candidate-login" onClick={() => setIsOpen(false)}>Login</Link>
+                    </Button>
+                    <Button variant="secondary" asChild>
+                      <Link to="/candidate-login?mode=register" onClick={() => setIsOpen(false)}>Register</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </motion.div>
