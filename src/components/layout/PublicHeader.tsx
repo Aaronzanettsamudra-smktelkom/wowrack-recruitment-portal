@@ -54,7 +54,7 @@ export function PublicHeader() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2">
           {user ? (
             <>
               <Avatar className="h-8 w-8">
@@ -69,11 +69,18 @@ export function PublicHeader() {
             </>
           ) : (
             <>
-              <Button variant="ghost" asChild>
+              <Button 
+                variant="ghost" 
+                asChild 
+                className="text-muted-foreground hover:text-foreground hover:bg-transparent"
+              >
                 <Link to="/candidate-login">Login</Link>
               </Button>
-              <Button variant="secondary" asChild>
-                <Link to="/candidate-login?mode=register">Register</Link>
+              <Button 
+                asChild 
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 shadow-sm"
+              >
+                <Link to="/candidate-register">Register</Link>
               </Button>
             </>
           )}
@@ -133,8 +140,8 @@ export function PublicHeader() {
                     <Button variant="ghost" asChild className="justify-start">
                       <Link to="/candidate-login" onClick={() => setIsOpen(false)}>Login</Link>
                     </Button>
-                    <Button variant="secondary" asChild>
-                      <Link to="/candidate-login?mode=register" onClick={() => setIsOpen(false)}>Register</Link>
+                    <Button asChild className="bg-primary text-primary-foreground">
+                      <Link to="/candidate-register" onClick={() => setIsOpen(false)}>Register</Link>
                     </Button>
                   </>
                 )}
