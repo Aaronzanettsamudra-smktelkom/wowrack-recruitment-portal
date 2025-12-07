@@ -1,11 +1,14 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+// Mock user data - set to null for logged out, or an object for logged in
+const mockUser = null as { email: string; avatarUrl?: string } | null;
+// Example logged in state:
+// const mockUser = { email: "candidate@example.com", avatarUrl: "" };
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -15,23 +18,10 @@ const navLinks = [
 
 export function PublicHeader() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<SupabaseUser | null>(null);
   const location = useLocation();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
-      }
-    );
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  // Use mock user data
+  const user = mockUser;
 
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
@@ -68,7 +58,7 @@ export function PublicHeader() {
           {user ? (
             <>
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.user_metadata?.avatar_url} />
+                <AvatarImage src={user.avatarUrl} />
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                   {getInitials(user.email || "U")}
                 </AvatarFallback>
@@ -127,7 +117,7 @@ export function PublicHeader() {
                   <>
                     <div className="flex items-center gap-2 px-3 py-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.user_metadata?.avatar_url} />
+                        <AvatarImage src={user.avatarUrl} />
                         <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                           {getInitials(user.email || "U")}
                         </AvatarFallback>
