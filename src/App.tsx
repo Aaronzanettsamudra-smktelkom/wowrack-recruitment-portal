@@ -13,6 +13,10 @@ import NewsDetail from "./pages/NewsDetail";
 import Login from "./pages/Login";
 import CandidateLogin from "./pages/CandidateLogin";
 import CandidateRegister from "./pages/CandidateRegister";
+import CandidateLayout from "./components/candidate/CandidateLayout";
+import CandidateDashboard from "./pages/candidate/CandidateDashboard";
+import CandidateApplications from "./pages/candidate/CandidateApplications";
+import CandidateProfile from "./pages/candidate/CandidateProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +38,14 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/candidate-login" element={<CandidateLogin />} />
           <Route path="/candidate-register" element={<CandidateRegister />} />
+          
+          {/* Candidate Portal */}
+          <Route path="/candidate" element={<CandidateLayout />}>
+            <Route index element={<CandidateDashboard />} />
+            <Route path="applications" element={<CandidateApplications />} />
+            <Route path="profile" element={<CandidateProfile />} />
+          </Route>
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
