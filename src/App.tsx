@@ -17,6 +17,11 @@ import CandidateLayout from "./components/candidate/CandidateLayout";
 import CandidateDashboard from "./pages/candidate/CandidateDashboard";
 import CandidateApplications from "./pages/candidate/CandidateApplications";
 import CandidateProfile from "./pages/candidate/CandidateProfile";
+import HiringManagerLayout from "./components/hiring-manager/HiringManagerLayout";
+import HiringManagerDashboard from "./pages/hiring-manager/HiringManagerDashboard";
+import HiringManagerMPP from "./pages/hiring-manager/HiringManagerMPP";
+import HiringManagerRecruitment from "./pages/hiring-manager/HiringManagerRecruitment";
+import HiringManagerInbox from "./pages/hiring-manager/HiringManagerInbox";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +49,14 @@ const App = () => (
             <Route index element={<CandidateDashboard />} />
             <Route path="applications" element={<CandidateApplications />} />
             <Route path="profile" element={<CandidateProfile />} />
+          </Route>
+          
+          {/* Hiring Manager Portal */}
+          <Route path="/hiring-manager" element={<HiringManagerLayout />}>
+            <Route index element={<HiringManagerDashboard />} />
+            <Route path="mpp" element={<HiringManagerMPP />} />
+            <Route path="recruitment" element={<HiringManagerRecruitment />} />
+            <Route path="inbox" element={<HiringManagerInbox />} />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
