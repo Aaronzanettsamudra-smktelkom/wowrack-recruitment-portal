@@ -22,6 +22,13 @@ import HiringManagerDashboard from "./pages/hiring-manager/HiringManagerDashboar
 import HiringManagerMPP from "./pages/hiring-manager/HiringManagerMPP";
 import HiringManagerRecruitment from "./pages/hiring-manager/HiringManagerRecruitment";
 import HiringManagerInbox from "./pages/hiring-manager/HiringManagerInbox";
+import HRLayout from "./components/hr/HRLayout";
+import HRDashboard from "./pages/hr/HRDashboard";
+import HRRequisitions from "./pages/hr/HRRequisitions";
+import HRCandidates from "./pages/hr/HRCandidates";
+import HRPipeline from "./pages/hr/HRPipeline";
+import HRInterviews from "./pages/hr/HRInterviews";
+import HRAnalytics from "./pages/hr/HRAnalytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
