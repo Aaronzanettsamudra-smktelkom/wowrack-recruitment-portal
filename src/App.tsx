@@ -66,6 +66,16 @@ const App = () => (
             <Route path="inbox" element={<HiringManagerInbox />} />
           </Route>
           
+          {/* HR Portal */}
+          <Route path="/hr" element={<HRLayout />}>
+            <Route index element={<HRDashboard />} />
+            <Route path="requisitions" element={<HRRequisitions />} />
+            <Route path="candidates" element={<HRCandidates />} />
+            <Route path="pipeline" element={<HRPipeline />} />
+            <Route path="interviews" element={<HRInterviews />} />
+            <Route path="analytics" element={<HRAnalytics />} />
+          </Route>
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
