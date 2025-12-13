@@ -29,6 +29,10 @@ import HRCandidates from "./pages/hr/HRCandidates";
 import HRPipeline from "./pages/hr/HRPipeline";
 import HRInterviews from "./pages/hr/HRInterviews";
 import HRAnalytics from "./pages/hr/HRAnalytics";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +78,13 @@ const App = () => (
             <Route path="pipeline" element={<HRPipeline />} />
             <Route path="interviews" element={<HRInterviews />} />
             <Route path="analytics" element={<HRAnalytics />} />
+          </Route>
+          
+          {/* Admin Portal */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
