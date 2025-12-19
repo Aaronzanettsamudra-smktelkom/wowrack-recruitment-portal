@@ -65,9 +65,11 @@ export default function HRLayout() {
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className="h-16 flex items-center justify-between px-4 border-b">
-            <div>
-              <h1 className="font-bold text-lg text-primary">HR Portal</h1>
-              <p className="text-xs text-muted-foreground">Human Resources</p>
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              <div>
+                <h1 className="font-bold text-lg text-primary">HR Portal</h1>
+              </div>
             </div>
             <Button
               variant="ghost"
@@ -92,6 +94,7 @@ export default function HRLayout() {
               </div>
             </div>
           </div>
+
 
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
