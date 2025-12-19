@@ -19,6 +19,9 @@ export interface ForwardedCandidate {
   status: 'pending_review' | 'interview_scheduled' | 'interviewed' | 'rejected' | 'hired';
   interviewFeedback?: string;
   interviewScore?: number;
+  interviewDate?: string;
+  interviewTime?: string;
+  meetingLink?: string;
 }
 
 export interface MPPRequest {
@@ -110,6 +113,9 @@ export const mockForwardedCandidates: ForwardedCandidate[] = [
     aiScore: 88,
     forwardedDate: '2025-02-11',
     status: 'interview_scheduled',
+    interviewDate: '2025-02-20',
+    interviewTime: '10:00',
+    meetingLink: 'https://meet.google.com/abc-defg-hij',
   },
   {
     id: 'FC003',
@@ -129,7 +135,10 @@ export const mockForwardedCandidates: ForwardedCandidate[] = [
     requisitionId: 'REQ003',
     aiScore: 78,
     forwardedDate: '2025-02-13',
-    status: 'pending_review',
+    status: 'interview_scheduled',
+    interviewDate: '2025-02-22',
+    interviewTime: '14:30',
+    meetingLink: 'https://zoom.us/j/123456789',
   },
   {
     id: 'FC005',

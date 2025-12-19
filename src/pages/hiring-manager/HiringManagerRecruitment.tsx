@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { mockRequisitions, mockForwardedCandidates, ForwardedCandidate } from "@/lib/mockHiringManagerData";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Star, MessageSquare, Eye } from "lucide-react";
+import { Users, Star, MessageSquare, Eye, Calendar, Clock, Video } from "lucide-react";
 
 export default function HiringManagerRecruitment() {
   const [candidates, setCandidates] = useState(mockForwardedCandidates);
@@ -62,6 +62,10 @@ export default function HiringManagerRecruitment() {
     setSelectedCandidate(null);
     setFeedback("");
     setScore("");
+  };
+
+  const handleJoinMeeting = (meetingLink: string) => {
+    window.open(meetingLink, '_blank');
   };
 
   return (
@@ -127,7 +131,20 @@ export default function HiringManagerRecruitment() {
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">{candidate.position}</p>
-                  <div className="flex items-center gap-4 mt-2 text-sm">
+                  <div className="flex items-center gap-4 mt-2 text-sm flex-wrap">
+                    {/* Interview Date & Time (shown for interview_scheduled) */}
+                    {candidate.status === 'interview_scheduled' && candidate.interviewDate && (
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        {candidate.interviewDate}
+                        {candidate.interviewTime && (
+                          <>
+                            <Clock className="h-4 w-4 ml-2" />
+                            {candidate.interviewTime}
+                          </>
+                        )}
+                      </span>
+                    )}
                     <span className="text-muted-foreground">
                       AI Score: <span className="font-medium text-foreground">{candidate.aiScore}%</span>
                     </span>
@@ -143,6 +160,18 @@ export default function HiringManagerRecruitment() {
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  {/* Join Button for interview_scheduled */}
+                  {candidate.status === 'interview_scheduled' && candidate.meetingLink && (
+                    <Button 
+                      variant="default" 
+                      size="sm"
+                      onClick={() => handleJoinMeeting(candidate.meetingLink!)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Video className="h-4 w-4 mr-1" />
+                      Join
+                    </Button>
+                  )}
                   {candidate.interviewFeedback ? (
                     <Dialog>
                       <DialogTrigger asChild>

@@ -67,6 +67,7 @@ export default function AdminUsers() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '',
     role: 'hr' as UserRole,
     department: '',
     status: 'active' as 'active' | 'inactive'
@@ -86,6 +87,7 @@ export default function AdminUsers() {
     setFormData({
       name: '',
       email: '',
+      password: '',
       role: 'hr',
       department: '',
       status: 'active'
@@ -98,6 +100,7 @@ export default function AdminUsers() {
     setFormData({
       name: user.name,
       email: user.email,
+      password: '',
       role: user.role,
       department: user.department,
       status: user.status
@@ -105,11 +108,23 @@ export default function AdminUsers() {
     setShowUserDialog(true);
   };
 
+  const shouldShowDepartment = formData.role === 'hiring-manager';
+
   const handleSaveUser = () => {
-    if (!formData.name || !formData.email || !formData.department) {
+    const needsDepartment = formData.role === 'hiring-manager';
+    if (!formData.name || !formData.email || (needsDepartment && !formData.department)) {
       toast({
         title: 'Validation Error',
         description: 'Please fill in all required fields.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    if (!editingUser && !formData.password) {
+      toast({
+        title: 'Validation Error',
+        description: 'Password is required for new users.',
         variant: 'destructive'
       });
       return;
@@ -336,12 +351,23 @@ export default function AdminUsers() {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="password">Password {!editingUser && '*'}</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder={editingUser ? "Leave blank to keep current password" : "Enter password"}
+                value={formData.password}
+                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Role *</Label>
                 <Select 
                   value={formData.role} 
-                  onValueChange={(value: UserRole) => setFormData(prev => ({ ...prev, role: value }))}
+                  onValueChange={(value: UserRole) => setFormData(prev => ({ ...prev, role: value, department: '' }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -371,22 +397,24 @@ export default function AdminUsers() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Department *</Label>
-              <Select 
-                value={formData.department} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  {departments.map(dept => (
-                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {shouldShowDepartment && (
+              <div className="space-y-2">
+                <Label>Department *</Label>
+                <Select 
+                  value={formData.department} 
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departments.map(dept => (
+                      <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <DialogFooter>

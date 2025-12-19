@@ -52,13 +52,10 @@ import { useToast } from '@/hooks/use-toast';
 interface NewsArticle {
   id: string;
   title: string;
-  excerpt: string;
   content: string;
   category: string;
-  author: string;
   publishDate: string;
   status: 'draft' | 'published' | 'archived';
-  imageUrl: string;
   views: number;
 }
 
@@ -66,92 +63,96 @@ const initialNews: NewsArticle[] = [
   {
     id: 'news-1',
     title: 'TechCorp Indonesia Raih Penghargaan Best Workplace 2025',
-    excerpt: 'Perusahaan kembali meraih penghargaan bergengsi sebagai tempat kerja terbaik.',
-    content: 'TechCorp Indonesia berhasil meraih penghargaan Best Workplace 2025 dari Great Place to Work Institute...',
-    category: 'Achievement',
-    author: 'HR Communications',
+    content: 'TechCorp Indonesia berhasil meraih penghargaan Best Workplace 2025 dari Great Place to Work Institute. Penghargaan ini diberikan atas komitmen perusahaan dalam menciptakan lingkungan kerja yang inklusif, inovatif, dan mendukung kesejahteraan karyawan.',
+    category: 'News',
     publishDate: '2025-01-15',
     status: 'published',
-    imageUrl: '/placeholder.svg',
     views: 1250,
   },
   {
     id: 'news-2',
     title: 'Peluncuran Program Beasiswa Karyawan 2025',
-    excerpt: 'Program beasiswa pendidikan untuk pengembangan kompetensi karyawan.',
-    content: 'Dalam rangka mendukung pengembangan kompetensi, perusahaan meluncurkan program beasiswa...',
-    category: 'Program',
-    author: 'Learning & Development',
+    content: 'Dalam rangka mendukung pengembangan kompetensi, perusahaan meluncurkan program beasiswa untuk karyawan yang ingin melanjutkan pendidikan. Program ini mencakup biaya kuliah penuh dan tunjangan belajar.',
+    category: 'News',
     publishDate: '2025-01-10',
     status: 'published',
-    imageUrl: '/placeholder.svg',
     views: 890,
+  },
+  {
+    id: 'culture-1',
+    title: 'Family Day 2025 - Kebersamaan dan Keceriaan',
+    content: 'Acara Family Day tahunan sukses diselenggarakan dengan berbagai kegiatan menarik untuk karyawan dan keluarga. Berbagai permainan, doorprize, dan pertunjukan menghibur peserta sepanjang hari.',
+    category: 'Culture',
+    publishDate: '2025-01-20',
+    status: 'published',
+    views: 750,
+  },
+  {
+    id: 'culture-2',
+    title: 'Values Champion Program - Menghargai Budaya Perusahaan',
+    content: 'Program Values Champion diluncurkan untuk menghargai karyawan yang menjadi teladan dalam menjalankan nilai-nilai perusahaan. Setiap bulan, karyawan terpilih akan mendapatkan penghargaan khusus.',
+    category: 'Culture',
+    publishDate: '2025-01-25',
+    status: 'published',
+    views: 620,
   },
   {
     id: 'news-3',
     title: 'Kebijakan Hybrid Working Diperpanjang',
-    excerpt: 'Kebijakan kerja hybrid akan terus berlaku hingga akhir 2025.',
-    content: 'Berdasarkan evaluasi positif dari implementasi hybrid working...',
-    category: 'Policy',
-    author: 'HR Policy',
+    content: 'Berdasarkan evaluasi positif dari implementasi hybrid working, kebijakan kerja fleksibel akan terus berlaku hingga akhir 2025. Karyawan dapat memilih jadwal kerja yang sesuai dengan kebutuhan.',
+    category: 'News',
     publishDate: '2025-01-05',
     status: 'published',
-    imageUrl: '/placeholder.svg',
     views: 2100,
   },
   {
     id: 'news-4',
     title: 'Rencana Ekspansi Regional Q2 2025',
-    excerpt: 'Draft pengumuman ekspansi ke wilayah baru.',
-    content: 'Sebagai bagian dari strategi pertumbuhan...',
-    category: 'Announcement',
-    author: 'Corporate Communications',
+    content: 'Sebagai bagian dari strategi pertumbuhan, perusahaan berencana membuka kantor baru di beberapa kota besar di Indonesia pada kuartal kedua tahun ini.',
+    category: 'News',
     publishDate: '2025-02-01',
     status: 'draft',
-    imageUrl: '/placeholder.svg',
     views: 0,
   },
 ];
 
-const categories = ['Achievement', 'Program', 'Policy', 'Announcement', 'Event', 'Other'];
+const categories = ['News', 'Culture'];
 
 export default function HRNewsManagement() {
   const [news, setNews] = useState<NewsArticle[]>(initialNews);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [showDialog, setShowDialog] = useState(false);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [viewingNews, setViewingNews] = useState<NewsArticle | null>(null);
   const [editingNews, setEditingNews] = useState<NewsArticle | null>(null);
   const [deleteNews, setDeleteNews] = useState<NewsArticle | null>(null);
   const [formData, setFormData] = useState({
     title: '',
-    excerpt: '',
     content: '',
     category: '',
-    author: '',
     publishDate: '',
     status: 'draft' as 'draft' | 'published' | 'archived',
-    imageUrl: '/placeholder.svg',
   });
   const { toast } = useToast();
 
   const filteredNews = news.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+                         item.content.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
+    return matchesSearch && matchesStatus && matchesCategory;
   });
 
   const openCreateDialog = () => {
     setEditingNews(null);
     setFormData({
       title: '',
-      excerpt: '',
       content: '',
       category: '',
-      author: '',
       publishDate: new Date().toISOString().split('T')[0],
       status: 'draft',
-      imageUrl: '/placeholder.svg',
     });
     setShowDialog(true);
   };
@@ -160,19 +161,21 @@ export default function HRNewsManagement() {
     setEditingNews(item);
     setFormData({
       title: item.title,
-      excerpt: item.excerpt,
       content: item.content,
       category: item.category,
-      author: item.author,
       publishDate: item.publishDate,
       status: item.status,
-      imageUrl: item.imageUrl,
     });
     setShowDialog(true);
   };
 
+  const openDetailDialog = (item: NewsArticle) => {
+    setViewingNews(item);
+    setShowDetailDialog(true);
+  };
+
   const handleSave = () => {
-    if (!formData.title || !formData.excerpt || !formData.category) {
+    if (!formData.title || !formData.content || !formData.category) {
       toast({
         title: 'Validation Error',
         description: 'Please fill in all required fields.',
@@ -188,8 +191,8 @@ export default function HRNewsManagement() {
           : item
       ));
       toast({
-        title: 'News Updated',
-        description: 'The news article has been updated successfully.',
+        title: 'Content Updated',
+        description: 'The content has been updated successfully.',
       });
     } else {
       const newArticle: NewsArticle = {
@@ -199,8 +202,8 @@ export default function HRNewsManagement() {
       };
       setNews(prev => [newArticle, ...prev]);
       toast({
-        title: 'News Created',
-        description: 'The news article has been created successfully.',
+        title: 'Content Created',
+        description: 'The content has been created successfully.',
       });
     }
     setShowDialog(false);
@@ -210,8 +213,8 @@ export default function HRNewsManagement() {
     if (deleteNews) {
       setNews(prev => prev.filter(item => item.id !== deleteNews.id));
       toast({
-        title: 'News Deleted',
-        description: 'The news article has been deleted.',
+        title: 'Content Deleted',
+        description: 'The content has been deleted.',
       });
       setDeleteNews(null);
     }
@@ -230,17 +233,28 @@ export default function HRNewsManagement() {
     }
   };
 
+  const getCategoryBadge = (category: string) => {
+    switch (category) {
+      case 'News':
+        return <Badge className="bg-blue-500">News</Badge>;
+      case 'Culture':
+        return <Badge className="bg-purple-500">Culture</Badge>;
+      default:
+        return <Badge variant="outline">{category}</Badge>;
+    }
+  };
+
   return (
     <div className="p-6 lg:p-8 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold">News Management</h1>
-          <p className="text-muted-foreground mt-1">Create and manage company news articles</p>
+          <h1 className="text-2xl lg:text-3xl font-bold">News & Culture Management</h1>
+          <p className="text-muted-foreground mt-1">Create and manage company news and culture content</p>
         </div>
         <Button onClick={openCreateDialog}>
           <Plus className="h-4 w-4 mr-2" />
-          Create News
+          Create Content
         </Button>
       </div>
 
@@ -251,12 +265,22 @@ export default function HRNewsManagement() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search news..."
+                placeholder="Search content..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="News">News</SelectItem>
+                <SelectItem value="Culture">Culture</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-40">
                 <SelectValue placeholder="Status" />
@@ -272,10 +296,10 @@ export default function HRNewsManagement() {
         </CardContent>
       </Card>
 
-      {/* News Table */}
+      {/* Content Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">News Articles ({filteredNews.length})</CardTitle>
+          <CardTitle className="text-lg">Content ({filteredNews.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -283,8 +307,7 @@ export default function HRNewsManagement() {
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Author</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Publish Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Views</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -296,17 +319,11 @@ export default function HRNewsManagement() {
                   <TableCell>
                     <div>
                       <p className="font-medium line-clamp-1">{item.title}</p>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{item.excerpt}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{item.content.substring(0, 60)}...</p>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{item.category}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <User className="h-3 w-3" />
-                      {item.author}
-                    </div>
+                    {getCategoryBadge(item.category)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -323,10 +340,13 @@ export default function HRNewsManagement() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(item)}>
+                      <Button variant="ghost" size="icon" onClick={() => openDetailDialog(item)} title="View Details">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => openEditDialog(item)} title="Edit">
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setDeleteNews(item)}>
+                      <Button variant="ghost" size="icon" onClick={() => setDeleteNews(item)} title="Delete">
                         <Trash2 className="h-4 w-4 text-red-600" />
                       </Button>
                     </div>
@@ -335,8 +355,8 @@ export default function HRNewsManagement() {
               ))}
               {filteredNews.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    No news articles found
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    No content found
                   </TableCell>
                 </TableRow>
               )}
@@ -345,13 +365,40 @@ export default function HRNewsManagement() {
         </CardContent>
       </Card>
 
+      {/* Detail Dialog */}
+      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{viewingNews?.title}</DialogTitle>
+            <DialogDescription className="flex items-center gap-2 pt-2">
+              {viewingNews && getCategoryBadge(viewingNews.category)}
+              {viewingNews && getStatusBadge(viewingNews.status)}
+              <span className="text-muted-foreground ml-2">
+                Published: {viewingNews?.publishDate}
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 space-y-4">
+            <div className="prose prose-sm max-w-none">
+              <p className="text-foreground whitespace-pre-wrap">{viewingNews?.content}</p>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4 border-t">
+              <span className="flex items-center gap-1">
+                <Eye className="h-4 w-4" />
+                {viewingNews?.views.toLocaleString()} views
+              </span>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Create/Edit Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingNews ? 'Edit News Article' : 'Create News Article'}</DialogTitle>
+            <DialogTitle>{editingNews ? 'Edit Content' : 'Create Content'}</DialogTitle>
             <DialogDescription>
-              {editingNews ? 'Update the news article details.' : 'Create a new news article for the company.'}
+              {editingNews ? 'Update the content details.' : 'Create a new news or culture content.'}
             </DialogDescription>
           </DialogHeader>
 
@@ -361,27 +408,17 @@ export default function HRNewsManagement() {
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Enter news title"
+                placeholder="Enter title"
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Excerpt *</Label>
-              <Textarea
-                value={formData.excerpt}
-                onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-                placeholder="Brief summary of the news"
-                rows={2}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Content</Label>
+              <Label>Content *</Label>
               <Textarea
                 value={formData.content}
                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="Full news content..."
-                rows={6}
+                placeholder="Enter content..."
+                rows={8}
               />
             </div>
 
@@ -404,43 +441,32 @@ export default function HRNewsManagement() {
               </div>
 
               <div className="space-y-2">
-                <Label>Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value: 'draft' | 'published' | 'archived') => 
-                    setFormData(prev => ({ ...prev, status: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Author</Label>
-                <Input
-                  value={formData.author}
-                  onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
-                  placeholder="Author name"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Publish Date</Label>
+                <Label>Publish Date *</Label>
                 <Input
                   type="date"
                   value={formData.publishDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, publishDate: e.target.value }))}
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value: 'draft' | 'published' | 'archived') => 
+                  setFormData(prev => ({ ...prev, status: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -449,7 +475,7 @@ export default function HRNewsManagement() {
               Cancel
             </Button>
             <Button onClick={handleSave}>
-              {editingNews ? 'Save Changes' : 'Create News'}
+              {editingNews ? 'Save Changes' : 'Create Content'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -459,7 +485,7 @@ export default function HRNewsManagement() {
       <AlertDialog open={!!deleteNews} onOpenChange={() => setDeleteNews(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete News Article</AlertDialogTitle>
+            <AlertDialogTitle>Delete Content</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete "{deleteNews?.title}"? This action cannot be undone.
             </AlertDialogDescription>
