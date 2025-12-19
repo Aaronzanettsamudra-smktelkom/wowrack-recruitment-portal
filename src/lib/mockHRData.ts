@@ -40,7 +40,7 @@ export interface TimelineEvent {
 
 export type PipelineStage = 
   | 'applied' 
-  | 'screening' 
+  | 'selected' 
   | 'contacted' 
   | 'hr-interview' 
   | 'user-interview' 
@@ -60,6 +60,7 @@ export interface Interview {
   type: 'hr' | 'technical' | 'final';
   status: 'scheduled' | 'completed' | 'cancelled';
   meetingLink?: string;
+  aiScore?: number;
 }
 
 export interface AnalyticsData {
@@ -71,14 +72,14 @@ export interface AnalyticsData {
 }
 
 export const pipelineStages: { key: PipelineStage; label: string; color: string }[] = [
-  { key: 'applied', label: 'Melamar', color: 'bg-blue-500' },
-  { key: 'screening', label: 'Screening', color: 'bg-purple-500' },
-  { key: 'contacted', label: 'Dihubungi', color: 'bg-indigo-500' },
-  { key: 'hr-interview', label: 'Interview HR', color: 'bg-cyan-500' },
-  { key: 'user-interview', label: 'Interview User', color: 'bg-teal-500' },
-  { key: 'salary-negotiation', label: 'Negosiasi Gaji', color: 'bg-amber-500' },
-  { key: 'hired', label: 'Diterima', color: 'bg-green-500' },
-  { key: 'rejected', label: 'Ditolak', color: 'bg-red-500' },
+  { key: 'applied', label: 'Applied', color: 'bg-blue-500' },
+  { key: 'selected', label: 'Selected', color: 'bg-purple-500' },
+  { key: 'contacted', label: 'Contacted', color: 'bg-indigo-500' },
+  { key: 'hr-interview', label: 'HR Interview', color: 'bg-cyan-500' },
+  { key: 'user-interview', label: 'User Interview', color: 'bg-teal-500' },
+  { key: 'salary-negotiation', label: 'Salary Negotiation', color: 'bg-amber-500' },
+  { key: 'hired', label: 'Hired', color: 'bg-green-500' },
+  { key: 'rejected', label: 'Rejected', color: 'bg-red-500' },
 ];
 
 export const mockMPPRequests: MPPRequest[] = [
@@ -167,7 +168,7 @@ export const mockCandidates: Candidate[] = [
     skills: ['Python', 'Django', 'PostgreSQL', 'Docker'],
     experience: 5,
     appliedDate: '2025-01-11',
-    stage: 'screening',
+    stage: 'selected',
     source: 'Jobstreet',
     resumeUrl: '/resumes/agus-hermawan.pdf',
     timeline: [
@@ -318,6 +319,7 @@ export const mockInterviews: Interview[] = [
     type: 'hr',
     status: 'scheduled',
     meetingLink: 'https://meet.google.com/abc-defg-hij',
+    aiScore: 92,
   },
   {
     id: 'int-2',
@@ -331,6 +333,7 @@ export const mockInterviews: Interview[] = [
     type: 'technical',
     status: 'scheduled',
     meetingLink: 'https://meet.google.com/klm-nopq-rst',
+    aiScore: 85,
   },
   {
     id: 'int-3',
@@ -343,6 +346,7 @@ export const mockInterviews: Interview[] = [
     interviewers: ['Putri Maharani'],
     type: 'final',
     status: 'completed',
+    aiScore: 94,
   },
 ];
 

@@ -9,7 +9,9 @@ import {
   BarChart3,
   Menu,
   X,
-  LogOut
+  LogOut,
+  Newspaper,
+  Heart
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -23,6 +25,8 @@ const navItems = [
   { path: '/hr/pipeline', label: 'Pipeline', icon: Kanban },
   { path: '/hr/interviews', label: 'Interviews', icon: Calendar },
   { path: '/hr/analytics', label: 'Analytics', icon: BarChart3 },
+  { path: '/hr/news', label: 'News', icon: Newspaper },
+  { path: '/hr/culture', label: 'Culture', icon: Heart },
 ];
 
 export default function HRLayout() {

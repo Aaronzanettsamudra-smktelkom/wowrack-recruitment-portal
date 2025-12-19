@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
-  Users, 
+  Star,
   Video,
   Plus,
   Check,
@@ -141,9 +141,10 @@ export default function HRInterviews() {
                 <Clock className="h-4 w-4" />
                 <span>{interview.scheduledTime} ({interview.duration} min)</span>
               </div>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <Users className="h-4 w-4" />
-                <span>{interview.interviewers.join(', ')}</span>
+              <div className="flex items-center gap-1">
+                <Star className="h-4 w-4 text-amber-500" />
+                <span className="font-medium text-amber-600">{interview.aiScore || '-'}</span>
+                <span className="text-muted-foreground">AI Score</span>
               </div>
             </div>
           </div>
@@ -201,23 +202,23 @@ export default function HRInterviews() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Calendar */}
-        <Card>
-          <CardHeader>
+        <Card className="xl:col-span-1">
+          <CardHeader className="pb-2">
             <CardTitle className="text-lg">Calendar</CardTitle>
             <CardDescription>Select a date to view availability</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col items-center">
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={setSelectedDate}
-              className="rounded-md border"
+              className="rounded-md border w-full max-w-[320px]"
             />
             
             {selectedDate && (
-              <div className="mt-4">
+              <div className="mt-4 w-full">
                 <h4 className="font-medium text-sm mb-2">
                   Available Slots for {format(selectedDate, 'MMM d, yyyy')}
                 </h4>
@@ -238,7 +239,7 @@ export default function HRInterviews() {
         </Card>
 
         {/* Interviews List */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="xl:col-span-2 space-y-6">
           {/* Upcoming */}
           <div>
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
