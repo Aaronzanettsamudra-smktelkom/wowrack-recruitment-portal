@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Tag, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
+import { ArrowLeft, Calendar, Tag, Share2, Facebook, Twitter, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -13,6 +14,23 @@ export default function NewsDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const article = newsArticles.find((a) => a.id === id);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Mock gallery images for the article
+  const galleryImages = [
+    article?.image || "",
+    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
+  ];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
 
   if (!article) {
     return (
@@ -56,106 +74,158 @@ export default function NewsDetail() {
     <div className="min-h-screen bg-background">
       <PublicHeader />
 
-      <article>
-        {/* Hero Image */}
-        <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
-          <img
-            src={article.image}
-            alt={article.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        </div>
-
-        <div className="container relative -mt-24 pb-16">
+      <article className="pt-24 pb-16">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto bg-card rounded-xl border border-border p-8 md:p-12 shadow-card"
+            className="flex flex-col lg:flex-row gap-8"
           >
-            {/* Back Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate(-1)}
-              className="mb-6 -ml-2"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
+            {/* Image Slider - Left Side */}
+            <div className="lg:w-2/5">
+              <div className="sticky top-24">
+                <div className="relative rounded-xl overflow-hidden bg-muted aspect-[4/3]">
+                  <img
+                    src={galleryImages[currentImageIndex]}
+                    alt={`${article.title} - Image ${currentImageIndex + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Navigation Arrows */}
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/80 hover:bg-background"
+                    onClick={prevImage}
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/80 hover:bg-background"
+                    onClick={nextImage}
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
 
-            {/* Meta */}
-            <div className="flex items-center gap-4 mb-6">
-              <Badge variant="secondary">
-                <Tag className="h-3 w-3 mr-1" />
-                {article.category}
-              </Badge>
-              <span className="text-sm text-muted-foreground flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                {new Date(article.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
+                  {/* Image Counter */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-background/80 px-3 py-1 rounded-full text-sm">
+                    {currentImageIndex + 1} / {galleryImages.length}
+                  </div>
+                </div>
+
+                {/* Thumbnail Navigation */}
+                <div className="flex gap-2 mt-4">
+                  {galleryImages.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`flex-1 aspect-video rounded-lg overflow-hidden border-2 transition-all ${
+                        index === currentImageIndex
+                          ? "border-primary"
+                          : "border-transparent opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Title */}
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-              {article.title}
-            </h1>
-
-            {/* Content */}
-            <div className="prose prose-lg max-w-none text-muted-foreground">
-              <p className="lead text-lg">{article.excerpt}</p>
-              
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-                culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-
-              <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">Key Highlights</h2>
-              
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Innovation and collaboration drive our success</li>
-                <li>Employee well-being is at the heart of everything we do</li>
-                <li>Continuous learning opportunities for career growth</li>
-                <li>Diverse and inclusive workplace culture</li>
-              </ul>
-
-              <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
-                doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-              </p>
-            </div>
-
-            <Separator className="my-8" />
-
-            {/* Share */}
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <span className="text-sm font-medium text-foreground">Share this article</span>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" onClick={() => handleShare("facebook")}>
-                  <Facebook className="h-4 w-4" />
+            {/* Content - Right Side */}
+            <div className="lg:w-3/5">
+              <div className="bg-card rounded-xl border border-border p-8 md:p-10 shadow-card">
+                {/* Back Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate(-1)}
+                  className="mb-6 -ml-2"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
                 </Button>
-                <Button variant="outline" size="icon" onClick={() => handleShare("twitter")}>
-                  <Twitter className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={() => handleShare("linkedin")}>
-                  <Linkedin className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={() => handleShare("copy")}>
-                  <Share2 className="h-4 w-4" />
-                </Button>
+
+                {/* Meta */}
+                <div className="flex items-center gap-4 mb-6">
+                  <Badge variant="secondary">
+                    <Tag className="h-3 w-3 mr-1" />
+                    {article.category}
+                  </Badge>
+                  <span className="text-sm text-muted-foreground flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(article.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                  {article.title}
+                </h1>
+
+                {/* Content */}
+                <div className="prose prose-lg max-w-none text-muted-foreground">
+                  <p className="lead text-lg">{article.excerpt}</p>
+                  
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
+                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </p>
+
+                  <p>
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+                    culpa qui officia deserunt mollit anim id est laborum.
+                  </p>
+
+                  <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">Key Highlights</h2>
+                  
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Innovation and collaboration drive our success</li>
+                    <li>Employee well-being is at the heart of everything we do</li>
+                    <li>Continuous learning opportunities for career growth</li>
+                    <li>Diverse and inclusive workplace culture</li>
+                  </ul>
+
+                  <p>
+                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
+                    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
+                    veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                  </p>
+                </div>
+
+                <Separator className="my-8" />
+
+                {/* Share */}
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <span className="text-sm font-medium text-foreground">Share this article</span>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="icon" onClick={() => handleShare("facebook")}>
+                      <Facebook className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleShare("twitter")}>
+                      <Twitter className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleShare("linkedin")}>
+                      <Linkedin className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleShare("copy")}>
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
