@@ -30,7 +30,7 @@ import HRPipeline from "./pages/hr/HRPipeline";
 import HRInterviews from "./pages/hr/HRInterviews";
 import HRAnalytics from "./pages/hr/HRAnalytics";
 import HRNewsManagement from "./pages/hr/HRNewsManagement";
-import HRCultureManagement from "./pages/hr/HRCultureManagement";
+
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -81,7 +81,7 @@ const App = () => (
             <Route path="interviews" element={<HRInterviews />} />
             <Route path="analytics" element={<HRAnalytics />} />
             <Route path="news" element={<HRNewsManagement />} />
-            <Route path="culture" element={<HRCultureManagement />} />
+            
           </Route>
           
           {/* Admin Portal */}

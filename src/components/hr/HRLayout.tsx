@@ -10,8 +10,7 @@ import {
   Menu,
   X,
   LogOut,
-  Newspaper,
-  Heart
+  Newspaper
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -25,8 +24,7 @@ const navItems = [
   { path: '/hr/pipeline', label: 'Pipeline', icon: Kanban },
   { path: '/hr/interviews', label: 'Interviews', icon: Calendar },
   { path: '/hr/analytics', label: 'Analytics', icon: BarChart3 },
-  { path: '/hr/news', label: 'News', icon: Newspaper },
-  { path: '/hr/culture', label: 'Culture', icon: Heart },
+  { path: '/hr/news', label: 'News & Culture', icon: Newspaper },
 ];
 
 export default function HRLayout() {
