@@ -4,7 +4,7 @@ export interface CandidateApplication {
   department: string;
   appliedDate: string;
   aiScore: number;
-  currentStage: 'Under Review' | 'Interview' | 'Rejected' | 'Hired' | 'Screening' | 'Salary Negotiation';
+  currentStage: 'Under Review' | 'Interview' | 'User Interview' | 'Rejected' | 'Hired' | 'Screening' | 'Salary Negotiation';
   nextStep: string;
 }
 
@@ -37,46 +37,64 @@ export const mockCandidateApplications: CandidateApplication[] = [
     id: '1',
     position: 'Senior Software Engineer',
     department: 'Engineering',
-    appliedDate: '2025-01-10',
-    aiScore: 87,
+    appliedDate: '2025-01-15',
+    aiScore: 92,
     currentStage: 'Interview',
-    nextStep: 'Technical Interview pada 20 Januari',
+    nextStep: 'Technical interview scheduled for Jan 20, 2025',
   },
   {
     id: '2',
     position: 'Product Manager',
     department: 'Product',
-    appliedDate: '2025-01-08',
-    aiScore: 72,
-    currentStage: 'Under Review',
-    nextStep: 'Menunggu screening HR',
+    appliedDate: '2025-01-10',
+    aiScore: 78,
+    currentStage: 'Screening',
+    nextStep: 'Awaiting HR review',
   },
   {
     id: '3',
     position: 'UX Designer',
     department: 'Design',
-    appliedDate: '2024-12-15',
-    aiScore: 65,
-    currentStage: 'Rejected',
-    nextStep: 'Lamaran ditutup',
+    appliedDate: '2025-01-05',
+    aiScore: 85,
+    currentStage: 'User Interview',
+    nextStep: 'Final interview with Design Lead on Jan 22, 2025',
   },
   {
     id: '4',
     position: 'Data Analyst',
     department: 'Analytics',
-    appliedDate: '2024-11-20',
-    aiScore: 91,
-    currentStage: 'Hired',
-    nextStep: 'Onboarding dimulai 1 Februari',
+    appliedDate: '2024-12-20',
+    aiScore: 65,
+    currentStage: 'Rejected',
+    nextStep: 'Application closed',
   },
   {
     id: '5',
     position: 'Marketing Specialist',
     department: 'Marketing',
+    appliedDate: '2024-12-15',
+    aiScore: 88,
+    currentStage: 'Salary Negotiation',
+    nextStep: 'Offer letter being prepared',
+  },
+  {
+    id: '6',
+    position: 'DevOps Engineer',
+    department: 'Engineering',
+    appliedDate: '2025-01-08',
+    aiScore: 95,
+    currentStage: 'Hired',
+    nextStep: 'Onboarding starts Feb 1, 2025',
+  },
+  {
+    id: '7',
+    position: 'Business Analyst',
+    department: 'Operations',
     appliedDate: '2025-01-12',
-    aiScore: 78,
-    currentStage: 'Screening',
-    nextStep: 'Phone screening terjadwal',
+    aiScore: 72,
+    currentStage: 'Under Review',
+    nextStep: 'Resume under review by hiring manager',
   },
 ];
 
