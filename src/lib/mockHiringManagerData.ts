@@ -27,12 +27,16 @@ export interface ForwardedCandidate {
 export interface MPPRequest {
   id: string;
   title: string;
-  jobRequirement: string;
-  quantity: number;
+  aboutRole: string;
+  responsibilities: string;
+  requirements: string;
+  benefits: string;
   salaryMin: number;
   salaryMax: number;
-  priority: 'high' | 'medium' | 'low';
+  datePosted: string;
+  quantity: number;
   justification: string;
+  priority: 'high' | 'medium' | 'low';
   status: 'pending' | 'approved' | 'rejected' | 'revision_requested';
   submittedAt: string;
   feedback?: string;
@@ -157,38 +161,50 @@ export const mockMPPRequests: MPPRequest[] = [
   {
     id: 'MPP001',
     title: 'Backend Developer',
-    jobRequirement: 'Pengalaman 5+ tahun di Node.js, PostgreSQL, dan layanan cloud.',
-    quantity: 2,
+    aboutRole: 'We are looking for a skilled Backend Developer to join our engineering team and help build scalable server-side applications.',
+    responsibilities: '• Design and implement APIs\n• Optimize database queries\n• Write unit and integration tests\n• Collaborate with frontend team',
+    requirements: '• 5+ years experience with Node.js and PostgreSQL\n• Experience with cloud services\n• Strong problem-solving skills',
+    benefits: '• Competitive salary\n• Health insurance\n• Remote work options\n• Learning budget',
     salaryMin: 15000000,
     salaryMax: 25000000,
+    datePosted: '2025-01-10',
+    quantity: 2,
+    justification: 'Team expansion needed for new product launch.',
     priority: 'high',
-    justification: 'Ekspansi tim diperlukan untuk peluncuran produk baru.',
     status: 'rejected',
     submittedAt: '2025-01-10',
-    feedback: 'Kendala anggaran. Mohon revisi kisaran gaji atau kurangi jumlah.',
+    feedback: 'Budget constraints. Please revise salary range or reduce quantity.',
   },
   {
     id: 'MPP002',
     title: 'UX Designer',
-    jobRequirement: 'Pengalaman 3+ tahun di Figma, riset pengguna, dan prototyping.',
-    quantity: 1,
+    aboutRole: 'Join our design team to create exceptional user experiences across our product suite.',
+    responsibilities: '• Conduct user research\n• Create wireframes and prototypes\n• Design user interfaces\n• Collaborate with developers',
+    requirements: '• 3+ years experience in Figma\n• User research experience\n• Strong portfolio\n• Prototyping skills',
+    benefits: '• Creative environment\n• Health insurance\n• Flexible hours\n• Professional development',
     salaryMin: 12000000,
     salaryMax: 18000000,
+    datePosted: '2025-01-15',
+    quantity: 1,
+    justification: 'Current designer is overloaded with projects.',
     priority: 'medium',
-    justification: 'Designer saat ini kelebihan beban proyek.',
     status: 'revision_requested',
     submittedAt: '2025-01-15',
-    feedback: 'Mohon berikan detail lebih lanjut tentang timeline proyek dan distribusi beban kerja.',
+    feedback: 'Please provide more details about project timeline and workload distribution.',
   },
   {
     id: 'MPP003',
     title: 'DevOps Engineer',
-    jobRequirement: 'Pengalaman 4+ tahun di AWS, Docker, Kubernetes.',
-    quantity: 1,
+    aboutRole: 'We need a DevOps Engineer to help us scale our infrastructure and improve deployment processes.',
+    responsibilities: '• Manage CI/CD pipelines\n• Monitor system performance\n• Implement security best practices\n• Automate infrastructure',
+    requirements: '• 4+ years experience with AWS, Docker, Kubernetes\n• Scripting skills\n• Infrastructure as code experience',
+    benefits: '• Competitive salary\n• Health insurance\n• Remote work\n• Stock options',
     salaryMin: 18000000,
     salaryMax: 28000000,
+    datePosted: '2025-01-20',
+    quantity: 1,
+    justification: 'Critical for infrastructure scaling.',
     priority: 'high',
-    justification: 'Kritis untuk scaling infrastruktur.',
     status: 'approved',
     submittedAt: '2025-01-20',
   },

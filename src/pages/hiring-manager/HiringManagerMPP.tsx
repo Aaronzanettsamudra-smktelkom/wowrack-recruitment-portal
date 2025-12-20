@@ -10,20 +10,26 @@ import { FileText, Send } from "lucide-react";
 
 interface MPPFormData {
   title: string;
-  jobRequirement: string;
-  quantity: number;
+  aboutRole: string;
+  responsibilities: string;
+  requirements: string;
+  benefits: string;
   salaryMin: number;
   salaryMax: number;
+  quantity: number;
   priority: 'high' | 'medium' | 'low';
   justification: string;
 }
 
 const initialFormData: MPPFormData = {
   title: '',
-  jobRequirement: '',
-  quantity: 1,
+  aboutRole: '',
+  responsibilities: '',
+  requirements: '',
+  benefits: '',
   salaryMin: 0,
   salaryMax: 0,
+  quantity: 1,
   priority: 'medium',
   justification: '',
 };
@@ -55,7 +61,8 @@ export default function HiringManagerMPP() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.jobRequirement || !formData.justification) {
+    if (!formData.title || !formData.aboutRole || !formData.responsibilities || 
+        !formData.requirements || !formData.benefits || !formData.justification) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -132,14 +139,50 @@ export default function HiringManagerMPP() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="jobRequirement">Job Requirements *</Label>
+              <Label htmlFor="aboutRole">About This Role *</Label>
               <Textarea
-                id="jobRequirement"
-                name="jobRequirement"
-                value={formData.jobRequirement}
+                id="aboutRole"
+                name="aboutRole"
+                value={formData.aboutRole}
+                onChange={handleInputChange}
+                placeholder="Provide a brief description of the role and its purpose..."
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="responsibilities">Responsibilities *</Label>
+              <Textarea
+                id="responsibilities"
+                name="responsibilities"
+                value={formData.responsibilities}
+                onChange={handleInputChange}
+                placeholder="List the key responsibilities for this role..."
+                rows={4}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="requirements">Requirements *</Label>
+              <Textarea
+                id="requirements"
+                name="requirements"
+                value={formData.requirements}
                 onChange={handleInputChange}
                 placeholder="Describe the required skills, experience, and qualifications..."
                 rows={4}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="benefits">Benefits *</Label>
+              <Textarea
+                id="benefits"
+                name="benefits"
+                value={formData.benefits}
+                onChange={handleInputChange}
+                placeholder="List the benefits offered for this position..."
+                rows={3}
               />
             </div>
 
@@ -153,7 +196,7 @@ export default function HiringManagerMPP() {
                   min="0"
                   value={formData.salaryMin}
                   onChange={handleInputChange}
-                  placeholder="e.g., 50000"
+                  placeholder="e.g., 15000000"
                 />
               </div>
 
@@ -166,7 +209,7 @@ export default function HiringManagerMPP() {
                   min="0"
                   value={formData.salaryMax}
                   onChange={handleInputChange}
-                  placeholder="e.g., 80000"
+                  placeholder="e.g., 25000000"
                 />
               </div>
 

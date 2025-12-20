@@ -6,13 +6,15 @@ import {
   MessageSquare,
   Clock,
   Filter,
-  Search
+  Search,
+  Eye
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Dialog,
   DialogContent,
@@ -37,8 +39,17 @@ export default function HRRequisitions() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRequest, setSelectedRequest] = useState<MPPRequest | null>(null);
   const [actionType, setActionType] = useState<'approve' | 'reject' | 'revision' | null>(null);
+  const [detailRequest, setDetailRequest] = useState<MPPRequest | null>(null);
   const [feedback, setFeedback] = useState('');
   const { toast } = useToast();
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
 
   const filteredRequests = requests.filter(req => {
     const matchesStatus = filterStatus === 'all' || req.status === filterStatus;
@@ -162,12 +173,11 @@ export default function HRRequisitions() {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Salary Range</p>
-                      <p className="font-medium">{request.salaryRange}</p>
+                      <p className="font-medium">{formatCurrency(request.salaryMin)} - {formatCurrency(request.salaryMax)}</p>
                     </div>
                   </div>
                   <div className="mt-3">
-                    <p className="text-sm text-muted-foreground">Justification</p>
-                    <p className="text-sm mt-1">{request.justification}</p>
+                    <p className="text-sm text-muted-foreground">Date Posted: {request.datePosted}</p>
                   </div>
                   {request.hrFeedback && (
                     <div className="mt-3 p-3 bg-muted rounded-lg">
@@ -177,38 +187,47 @@ export default function HRRequisitions() {
                   )}
                 </div>
                 
-                {request.status === 'pending' && (
-                  <div className="flex flex-col sm:flex-row gap-2 lg:flex-col">
-                    <Button 
-                      onClick={() => { setSelectedRequest(request); setActionType('approve'); }}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Approve
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      onClick={() => { setSelectedRequest(request); setActionType('revision'); }}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Request Changes
-                    </Button>
-                    <Button 
-                      variant="destructive"
-                      onClick={() => { setSelectedRequest(request); setActionType('reject'); }}
-                    >
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Reject
-                    </Button>
-                  </div>
-                )}
+                <div className="flex flex-col sm:flex-row gap-2 lg:flex-col">
+                  <Button 
+                    variant="outline"
+                    onClick={() => setDetailRequest(request)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Detail
+                  </Button>
+                  {request.status === 'pending' && (
+                    <>
+                      <Button 
+                        onClick={() => { setSelectedRequest(request); setActionType('approve'); }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Approve
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => { setSelectedRequest(request); setActionType('revision'); }}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Request Changes
+                      </Button>
+                      <Button 
+                        variant="destructive"
+                        onClick={() => { setSelectedRequest(request); setActionType('reject'); }}
+                      >
+                        <XCircle className="h-4 w-4 mr-2" />
+                        Reject
+                      </Button>
+                    </>
+                  )}
 
-                {request.status !== 'pending' && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span>Submitted {request.submittedDate}</span>
-                  </div>
-                )}
+                  {request.status !== 'pending' && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span>Submitted {request.submittedDate}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -224,6 +243,88 @@ export default function HRRequisitions() {
           </Card>
         )}
       </div>
+
+      {/* Detail Dialog */}
+      <Dialog open={!!detailRequest} onOpenChange={() => setDetailRequest(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-xl">{detailRequest?.title}</DialogTitle>
+            <DialogDescription>
+              {detailRequest?.department} • Posted on {detailRequest?.datePosted}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {detailRequest && (
+            <ScrollArea className="max-h-[60vh] pr-4">
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  {getStatusBadge(detailRequest.status)}
+                  <Badge variant="outline" className="capitalize">{detailRequest.priority} Priority</Badge>
+                  <span className="text-sm text-muted-foreground">
+                    {detailRequest.quantity} position(s)
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">About This Role</h4>
+                  <p className="text-sm text-muted-foreground">{detailRequest.aboutRole}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Responsibilities</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{detailRequest.responsibilities}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Requirements</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{detailRequest.requirements}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Benefits</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{detailRequest.benefits}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Salary Range</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {formatCurrency(detailRequest.salaryMin)} - {formatCurrency(detailRequest.salaryMax)}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Justification</h4>
+                  <p className="text-sm text-muted-foreground">{detailRequest.justification}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Requested By</p>
+                    <p className="font-medium">{detailRequest.requestedBy}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Submitted Date</p>
+                    <p className="font-medium">{detailRequest.submittedDate}</p>
+                  </div>
+                </div>
+
+                {detailRequest.hrFeedback && (
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h4 className="text-sm font-semibold text-foreground mb-2">HR Feedback</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.hrFeedback}</p>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDetailRequest(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Action Dialog */}
       <Dialog open={!!actionType} onOpenChange={() => { setActionType(null); setFeedback(''); }}>
