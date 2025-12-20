@@ -95,8 +95,8 @@ export default function HiringManagerInbox() {
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-medium text-foreground mb-1">Job Requirements</h4>
-                    <p className="text-sm text-muted-foreground">{mpp.jobRequirement}</p>
+                    <h4 className="text-sm font-medium text-foreground mb-1">Requirements</h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">{mpp.requirements}</p>
                   </div>
 
                   <div>

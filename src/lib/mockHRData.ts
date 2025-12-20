@@ -1,12 +1,18 @@
 export interface MPPRequest {
   id: string;
   title: string;
+  aboutRole: string;
+  responsibilities: string;
+  requirements: string;
+  benefits: string;
+  salaryMin: number;
+  salaryMax: number;
+  datePosted: string;
+  quantity: number;
+  justification: string;
   department: string;
   requestedBy: string;
-  quantity: number;
-  salaryRange: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
-  justification: string;
   status: 'pending' | 'approved' | 'rejected' | 'revision';
   submittedDate: string;
   hrFeedback?: string;
@@ -86,48 +92,72 @@ export const mockMPPRequests: MPPRequest[] = [
   {
     id: 'mpp-1',
     title: 'Senior Software Engineer',
+    aboutRole: 'We are looking for a Senior Software Engineer to join our growing engineering team. You will be responsible for designing and implementing scalable solutions.',
+    responsibilities: '• Lead technical design and architecture decisions\n• Mentor junior developers\n• Write clean, maintainable code\n• Participate in code reviews\n• Collaborate with product team',
+    requirements: '• 5+ years of experience in software development\n• Strong proficiency in React and Node.js\n• Experience with cloud services (AWS/GCP)\n• Excellent problem-solving skills',
+    benefits: '• Competitive salary\n• Health insurance\n• Flexible working hours\n• Remote work options\n• Professional development budget',
+    salaryMin: 20000000,
+    salaryMax: 30000000,
+    datePosted: '2025-01-10',
+    quantity: 2,
+    justification: 'Team expansion to support new product launch',
     department: 'Engineering',
     requestedBy: 'Budi Santoso',
-    quantity: 2,
-    salaryRange: 'Rp 20.000.000 - Rp 30.000.000',
     priority: 'high',
-    justification: 'Ekspansi tim untuk mendukung peluncuran produk baru',
     status: 'pending',
     submittedDate: '2025-01-10',
   },
   {
     id: 'mpp-2',
     title: 'Marketing Manager',
+    aboutRole: 'We are seeking a Marketing Manager to lead our marketing initiatives and drive brand growth across multiple channels.',
+    responsibilities: '• Develop marketing strategies\n• Manage marketing budget\n• Lead marketing campaigns\n• Analyze market trends\n• Build brand awareness',
+    requirements: '• 7+ years of marketing experience\n• Strong leadership skills\n• Experience with digital marketing\n• Excellent communication skills',
+    benefits: '• Competitive salary\n• Performance bonus\n• Health insurance\n• Company car allowance',
+    salaryMin: 15000000,
+    salaryMax: 22000000,
+    datePosted: '2025-01-08',
+    quantity: 1,
+    justification: 'Replacing team lead who resigned',
     department: 'Marketing',
     requestedBy: 'Dewi Lestari',
-    quantity: 1,
-    salaryRange: 'Rp 15.000.000 - Rp 22.000.000',
     priority: 'medium',
-    justification: 'Mengganti team lead yang resign',
     status: 'pending',
     submittedDate: '2025-01-08',
   },
   {
     id: 'mpp-3',
     title: 'Data Analyst',
+    aboutRole: 'Join our analytics team to help drive data-driven decisions across the organization.',
+    responsibilities: '• Analyze complex datasets\n• Create dashboards and reports\n• Support business decisions with data insights\n• Develop predictive models',
+    requirements: '• 3+ years of data analysis experience\n• Proficiency in SQL and Python\n• Experience with visualization tools\n• Strong analytical skills',
+    benefits: '• Competitive salary\n• Learning budget\n• Health insurance\n• Flexible hours',
+    salaryMin: 12000000,
+    salaryMax: 18000000,
+    datePosted: '2025-01-05',
+    quantity: 3,
+    justification: 'Setting up new analytics department',
     department: 'Analytics',
     requestedBy: 'Ahmad Wijaya',
-    quantity: 3,
-    salaryRange: 'Rp 12.000.000 - Rp 18.000.000',
     priority: 'urgent',
-    justification: 'Setup departemen analytics baru',
     status: 'pending',
     submittedDate: '2025-01-05',
   },
   {
     id: 'mpp-4',
     title: 'UX Designer',
+    aboutRole: 'We are looking for a creative UX Designer to enhance our product user experience.',
+    responsibilities: '• Design user interfaces\n• Conduct user research\n• Create wireframes and prototypes\n• Collaborate with developers',
+    requirements: '• 4+ years of UX design experience\n• Proficiency in Figma\n• Strong portfolio\n• User research skills',
+    benefits: '• Competitive salary\n• Creative environment\n• Health insurance\n• Remote work options',
+    salaryMin: 14000000,
+    salaryMax: 20000000,
+    datePosted: '2025-01-02',
+    quantity: 1,
+    justification: 'Strengthening design team',
     department: 'Design',
     requestedBy: 'Putri Maharani',
-    quantity: 1,
-    salaryRange: 'Rp 14.000.000 - Rp 20.000.000',
     priority: 'low',
-    justification: 'Penguatan tim design',
     status: 'approved',
     submittedDate: '2025-01-02',
   },
