@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
+import logoWowrack from "@/assets/logo-wowrack.png";
 
 type UserRole = "hr" | "manager" | "admin";
 
@@ -59,10 +60,8 @@ export default function Login() {
           className="w-full max-w-md"
         >
           <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              HR
-            </div>
-            <span className="text-xl font-bold text-foreground">TalentHub</span>
+            <img src={logoWowrack} alt="Wowrack Logo" className="h-9 w-auto" />
+            <span className="text-xl font-bold text-foreground">Wowrack Indonesia</span>
           </Link>
 
           <h1 className="text-2xl font-bold mb-2">Wowrack Recruitment Portal</h1>
@@ -204,7 +203,7 @@ export default function Login() {
             HR Management Portal
           </h2>
           <p className="text-primary-foreground/80 text-lg">
-            Manage candidates, review applications, and streamline your hiring process with TalentHub.
+            Manage candidates, review applications, and streamline your hiring process with Wowrack Indonesia Recruitment.
           </p>
         </motion.div>
       </div>

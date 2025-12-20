@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logoWowrack from "@/assets/logo-wowrack.png";
 
 export function PublicFooter() {
   return (
@@ -7,10 +8,8 @@ export function PublicFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-                HR
-              </div>
-              <span className="text-xl font-bold text-foreground">TalentHub</span>
+              <img src={logoWowrack} alt="Wowrack Logo" className="h-9 w-auto" />
+              <span className="text-xl font-bold text-foreground">Wowrack Indonesia</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Building exceptional teams through innovative recruitment solutions.
@@ -48,7 +47,7 @@ export function PublicFooter() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} TalentHub. All rights reserved.
+            © {new Date().getFullYear()} Wowrack Indonesia. All rights reserved.
           </p>
           <div className="flex gap-4">
             <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
