@@ -32,7 +32,7 @@ export function PublicHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center">
-          <img src={logoWowrack} alt="Wowrack Logo" className="h-10 w-auto" />
+          <img src={logoWowrack} alt="Wowrack Logo" className="h-8 w-auto" />
         </Link>
 
         {/* Desktop Nav */}

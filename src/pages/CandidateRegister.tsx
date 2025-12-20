@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import logoWowrack from "@/assets/wowrack-logo.png";
 
 export default function CandidateRegister() {
   const navigate = useNavigate();
@@ -60,21 +61,13 @@ export default function CandidateRegister() {
           animate={{ opacity: 1, x: 0 }}
           className="w-full max-w-md"
         >
-          <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              HR
-            </div>
-            <span className="text-xl font-bold text-foreground">TalentHub</span>
+          <Link to="/" className="flex items-center mb-8">
+            <img src={logoWowrack} alt="Wowrack Logo" className="h-10 w-auto" />
           </Link>
 
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <UserPlus className="h-6 w-6 text-primary" />
-            </div>
-            <h1 className="text-2xl font-bold">Create Account</h1>
-          </div>
+          <h1 className="text-2xl font-bold mb-2">Create Account</h1>
           <p className="text-muted-foreground mb-8">
-            Join TalentHub to discover exciting career opportunities
+            Join Wowrack to discover exciting career opportunities
           </p>
 
           <form onSubmit={handleRegister} className="space-y-4">
