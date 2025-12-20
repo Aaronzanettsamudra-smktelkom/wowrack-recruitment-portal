@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
+import logoWowrack from "@/assets/wowrack-logo.png";
 
 export default function CandidateLogin() {
   const navigate = useNavigate();
@@ -45,11 +46,8 @@ export default function CandidateLogin() {
           animate={{ opacity: 1, x: 0 }}
           className="w-full max-w-md"
         >
-          <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              HR
-            </div>
-            <span className="text-xl font-bold text-foreground">TalentHub</span>
+          <Link to="/" className="flex items-center mb-8">
+            <img src={logoWowrack} alt="Wowrack Logo" className="h-10 w-auto" />
           </Link>
 
           <h1 className="text-2xl font-bold mb-2">Candidate Portal</h1>

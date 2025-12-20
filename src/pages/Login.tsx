@@ -60,7 +60,7 @@ export default function Login() {
           className="w-full max-w-md"
         >
           <Link to="/" className="flex items-center mb-8">
-            <img src={logoWowrack} alt="Wowrack Logo" className="h-12 w-auto" />
+            <img src={logoWowrack} alt="Wowrack Logo" className="h-10 w-auto" />
           </Link>
 
           <h1 className="text-2xl font-bold mb-2">Wowrack Recruitment Portal</h1>
