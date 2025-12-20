@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoWowrack from "@/assets/logo-wowrack.png";
+import logoWowrack from "@/assets/wowrack-logo.png";
 
 export function PublicFooter() {
   return (
@@ -7,9 +7,8 @@ export function PublicFooter() {
       <div className="container py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src={logoWowrack} alt="Wowrack Logo" className="h-9 w-auto" />
-              <span className="text-xl font-bold text-foreground">Wowrack Indonesia</span>
+            <Link to="/" className="flex items-center mb-4">
+              <img src={logoWowrack} alt="Wowrack Logo" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground">
               Building exceptional teams through innovative recruitment solutions.
