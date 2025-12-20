@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
-import logoWowrack from "@/assets/logo-wowrack.png";
+import logoWowrack from "@/assets/wowrack-logo.png";
 
 type UserRole = "hr" | "manager" | "admin";
 
@@ -59,9 +59,8 @@ export default function Login() {
           animate={{ opacity: 1, x: 0 }}
           className="w-full max-w-md"
         >
-          <Link to="/" className="flex items-center gap-2 mb-8">
-            <img src={logoWowrack} alt="Wowrack Logo" className="h-9 w-auto" />
-            <span className="text-xl font-bold text-foreground">Wowrack Indonesia</span>
+          <Link to="/" className="flex items-center mb-8">
+            <img src={logoWowrack} alt="Wowrack Logo" className="h-12 w-auto" />
           </Link>
 
           <h1 className="text-2xl font-bold mb-2">Wowrack Recruitment Portal</h1>

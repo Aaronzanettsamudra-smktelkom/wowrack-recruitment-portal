@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import logoWowrack from "@/assets/logo-wowrack.png";
+import logoWowrack from "@/assets/wowrack-logo.png";
 
 // Mock user data - set to null for logged out, or an object for logged in
 const mockUser = null as { email: string; avatarUrl?: string } | null;
@@ -31,9 +31,8 @@ export function PublicHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logoWowrack} alt="Wowrack Logo" className="h-9 w-auto" />
-          <span className="text-xl font-bold text-foreground">Wowrack Indonesia</span>
+        <Link to="/" className="flex items-center">
+          <img src={logoWowrack} alt="Wowrack Logo" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Nav */}
