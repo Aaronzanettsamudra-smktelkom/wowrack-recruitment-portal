@@ -20,10 +20,14 @@ export default function QuickApply() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    phone: "",
-    address: "",
+    whatsapp: "",
+    domicile: "",
     linkedIn: "",
     coverLetter: "",
+    lastRole: "",
+    lastCompany: "",
+    lastWorkFrom: "",
+    lastWorkTo: "",
   });
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -152,14 +156,14 @@ export default function QuickApply() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number *</Label>
+                <Label htmlFor="whatsapp">WhatsApp Number *</Label>
                 <Input
-                  id="phone"
+                  id="whatsapp"
                   type="tel"
                   required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+1 (555) 000-0000"
+                  value={formData.whatsapp}
+                  onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                  placeholder="+62 812-3456-7890"
                 />
               </div>
               <div className="space-y-2">
@@ -175,14 +179,62 @@ export default function QuickApply() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Address *</Label>
+              <Label htmlFor="domicile">Domisili (Kota, Provinsi) *</Label>
               <Input
-                id="address"
+                id="domicile"
                 required
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                placeholder="123 Main St, City, State, ZIP"
+                value={formData.domicile}
+                onChange={(e) => setFormData({ ...formData, domicile: e.target.value })}
+                placeholder="Jakarta Selatan, DKI Jakarta"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Pengalaman Kerja Terakhir *</Label>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="lastRole" className="text-xs text-muted-foreground">Posisi/Role</Label>
+                  <Input
+                    id="lastRole"
+                    required
+                    value={formData.lastRole}
+                    onChange={(e) => setFormData({ ...formData, lastRole: e.target.value })}
+                    placeholder="Frontend Developer"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastCompany" className="text-xs text-muted-foreground">Perusahaan</Label>
+                  <Input
+                    id="lastCompany"
+                    required
+                    value={formData.lastCompany}
+                    onChange={(e) => setFormData({ ...formData, lastCompany: e.target.value })}
+                    placeholder="PT Contoh Indonesia"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="lastWorkFrom" className="text-xs text-muted-foreground">Dari</Label>
+                  <Input
+                    id="lastWorkFrom"
+                    type="month"
+                    required
+                    value={formData.lastWorkFrom}
+                    onChange={(e) => setFormData({ ...formData, lastWorkFrom: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastWorkTo" className="text-xs text-muted-foreground">Sampai</Label>
+                  <Input
+                    id="lastWorkTo"
+                    type="month"
+                    required
+                    value={formData.lastWorkTo}
+                    onChange={(e) => setFormData({ ...formData, lastWorkTo: e.target.value })}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">
