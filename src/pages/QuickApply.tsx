@@ -26,12 +26,7 @@ export default function QuickApply() {
     coverLetter: "",
   });
   const [cvFile, setCvFile] = useState<File | null>(null);
-  const [agreements, setAgreements] = useState({
-    privacyPolicy: false,
-    termsAndConditions: false,
-    dataProcessing: false,
-    accurateInfo: false,
-  });
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   if (!job) {
     return (
@@ -228,68 +223,25 @@ export default function QuickApply() {
               />
             </div>
 
-            <div className="space-y-4 bg-muted/30 rounded-lg p-4 border border-border">
-              <p className="text-sm font-medium text-foreground mb-3">Please confirm the following:</p>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="privacyPolicy"
-                    checked={agreements.privacyPolicy}
-                    onCheckedChange={(checked) =>
-                      setAgreements({ ...agreements, privacyPolicy: checked as boolean })
-                    }
-                    className="mt-1"
-                  />
-                  <label htmlFor="privacyPolicy" className="text-sm text-foreground cursor-pointer">
-                    I agree to the{" "}
-                    <Link to="/privacy" className="text-secondary hover:underline font-medium">
-                      Privacy Policy
-                    </Link>
-                    {" "}and consent to the processing of my personal data for recruitment purposes.
-                  </label>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="termsAndConditions"
-                    checked={agreements.termsAndConditions}
-                    onCheckedChange={(checked) =>
-                      setAgreements({ ...agreements, termsAndConditions: checked as boolean })
-                    }
-                    className="mt-1"
-                  />
-                  <label htmlFor="termsAndConditions" className="text-sm text-foreground cursor-pointer">
-                    I accept the{" "}
-                    <Link to="/terms" className="text-secondary hover:underline font-medium">
-                      Terms and Conditions
-                    </Link>
-                  </label>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="dataProcessing"
-                    checked={agreements.dataProcessing}
-                    onCheckedChange={(checked) =>
-                      setAgreements({ ...agreements, dataProcessing: checked as boolean })
-                    }
-                    className="mt-1"
-                  />
-                  <label htmlFor="dataProcessing" className="text-sm text-foreground cursor-pointer">
-                    I authorize the use of my information for background checks and employment verification.
-                  </label>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="accurateInfo"
-                    checked={agreements.accurateInfo}
-                    onCheckedChange={(checked) =>
-                      setAgreements({ ...agreements, accurateInfo: checked as boolean })
-                    }
-                    className="mt-1"
-                  />
-                  <label htmlFor="accurateInfo" className="text-sm text-foreground cursor-pointer">
-                    I confirm that all information provided in this application is accurate and complete.
-                  </label>
-                </div>
+            <div className="space-y-3 bg-muted/30 rounded-lg p-4 border border-border">
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="agreementTerms"
+                  checked={agreedToTerms}
+                  onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                  className="mt-1"
+                />
+                <label htmlFor="agreementTerms" className="text-sm text-foreground cursor-pointer">
+                  I agree to the{" "}
+                  <Link to="/privacy" className="text-secondary hover:underline font-medium">
+                    Privacy Policy
+                  </Link>
+                  ,{" "}
+                  <Link to="/terms" className="text-secondary hover:underline font-medium">
+                    Terms and Conditions
+                  </Link>
+                  , authorize background checks and employment verification, and confirm that all information provided is accurate and complete.
+                </label>
               </div>
             </div>
 
@@ -297,7 +249,7 @@ export default function QuickApply() {
               type="submit"
               size="lg"
               className="w-full"
-              disabled={isSubmitting || !Object.values(agreements).every(Boolean)}
+              disabled={isSubmitting || !agreedToTerms}
             >
               {isSubmitting ? (
                 <>
