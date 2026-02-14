@@ -9,6 +9,7 @@ import {
   BarChart3,
   Briefcase,
   Newspaper,
+  ClipboardList,
   Inbox,
   Settings,
   Shield,
@@ -44,6 +45,7 @@ const navItems: NavItem[] = [
   { path: '/hr/interviews', label: 'Interviews', icon: Calendar, roles: ['hr'] },
   { path: '/hr/analytics', label: 'Analytics', icon: BarChart3, roles: ['hr'] },
   { path: '/hr/news', label: 'News & Culture', icon: Newspaper, roles: ['hr'] },
+  { path: '/hr/surveys', label: 'Surveys', icon: ClipboardList, roles: ['hr'] },
 
   // Hiring Manager items
   { path: '/hiring-manager', label: 'Manager Dashboard', icon: LayoutDashboard, roles: ['hiring-manager'] },

@@ -1,5 +1,8 @@
 import { useState, useMemo } from 'react';
 import { mockCandidateApplications } from '@/lib/mockCandidateData';
+import { useSurveys } from '@/lib/surveyStore';
+import SurveyDialog from '@/components/candidate/SurveyDialog';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -18,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Video, Search, ArrowUpDown } from 'lucide-react';
+import { Video, Search, ArrowUpDown, ClipboardList, CheckCircle } from 'lucide-react';
 
 type SortField = 'position' | 'appliedDate' | 'currentStage';
 type SortOrder = 'asc' | 'desc';
@@ -28,6 +31,11 @@ export default function CandidateApplications() {
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [sortField, setSortField] = useState<SortField>('appliedDate');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [surveyApp, setSurveyApp] = useState<{ id: string; position: string; department: string; stage: 'Hired' | 'Rejected' } | null>(null);
+  const { addSurvey, hasSubmittedSurvey } = useSurveys();
+  const { toast } = useToast();
+
+  const isSurveyStage = (stage: string) => stage === 'Hired' || stage === 'Rejected';
 
   const getStageColor = (stage: string) => {
     switch (stage) {
@@ -235,6 +243,23 @@ export default function CandidateApplications() {
                           Join
                         </Button>
                       )}
+                      {isSurveyStage(app.currentStage) && (
+                        hasSubmittedSurvey(app.id) ? (
+                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                            <CheckCircle className="h-3.5 w-3.5" /> Submitted
+                          </span>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSurveyApp({ id: app.id, position: app.position, department: app.department, stage: app.currentStage as 'Hired' | 'Rejected' })}
+                            className="gap-2"
+                          >
+                            <ClipboardList className="h-4 w-4" />
+                            Survey
+                          </Button>
+                        )
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -250,6 +275,21 @@ export default function CandidateApplications() {
           </div>
         </CardContent>
       </Card>
+
+      {surveyApp && (
+        <SurveyDialog
+          open={!!surveyApp}
+          onOpenChange={(open) => !open && setSurveyApp(null)}
+          applicationId={surveyApp.id}
+          position={surveyApp.position}
+          department={surveyApp.department}
+          stage={surveyApp.stage}
+          onSubmit={(data) => {
+            addSurvey(data);
+            toast({ title: 'Survey Submitted', description: 'Thank you for your feedback!' });
+          }}
+        />
+      )}
     </div>
   );
 }
