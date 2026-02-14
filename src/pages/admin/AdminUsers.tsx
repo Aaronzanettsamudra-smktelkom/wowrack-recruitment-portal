@@ -54,7 +54,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
-import { mockUserAccounts, UserAccount, UserRole, departments } from '@/lib/mockAdminData';
+import { mockUserAccounts, UserAccount, UserRole } from '@/lib/mockAdminData';
+import { useDepartments } from '@/lib/departmentStore';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<UserAccount[]>(mockUserAccounts);
@@ -73,6 +74,7 @@ export default function AdminUsers() {
     status: 'active' as 'active' | 'inactive'
   });
   const { toast } = useToast();
+  const { departments } = useDepartments();
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
