@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { jobs } from "@/lib/mockData";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+
+interface Province {
+  id: string;
+  name: string;
+}
+
+interface Regency {
+  id: string;
+  province_id: string;
+  name: string;
+}
 
 export default function QuickApply() {
   const { id } = useParams();
@@ -21,7 +33,8 @@ export default function QuickApply() {
     fullName: "",
     email: "",
     whatsapp: "",
-    domicile: "",
+    provinceId: "",
+    regencyId: "",
     linkedIn: "",
     coverLetter: "",
     lastRole: "",
@@ -29,8 +42,28 @@ export default function QuickApply() {
     lastWorkFrom: "",
     lastWorkTo: "",
   });
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [regencies, setRegencies] = useState<Regency[]>([]);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  useEffect(() => {
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+      .then((res) => res.json())
+      .then((data) => setProvinces(data))
+      .catch(() => toast.error("Gagal memuat data provinsi"));
+  }, []);
+
+  useEffect(() => {
+    if (formData.provinceId) {
+      setRegencies([]);
+      setFormData((prev) => ({ ...prev, regencyId: "" }));
+      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${formData.provinceId}.json`)
+        .then((res) => res.json())
+        .then((data) => setRegencies(data))
+        .catch(() => toast.error("Gagal memuat data kota/kabupaten"));
+    }
+  }, [formData.provinceId]);
 
   if (!job) {
     return (
@@ -163,7 +196,7 @@ export default function QuickApply() {
                   required
                   value={formData.whatsapp}
                   onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                  placeholder="+62 812-3456-7890"
+                  placeholder="+62 8123456789"
                 />
               </div>
               <div className="space-y-2">
@@ -178,15 +211,44 @@ export default function QuickApply() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="domicile">Domisili (Kota, Provinsi) *</Label>
-              <Input
-                id="domicile"
-                required
-                value={formData.domicile}
-                onChange={(e) => setFormData({ ...formData, domicile: e.target.value })}
-                placeholder="Jakarta Selatan, DKI Jakarta"
-              />
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label>Provinsi *</Label>
+                <Select
+                  value={formData.provinceId}
+                  onValueChange={(value) => setFormData({ ...formData, provinceId: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Provinsi" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {provinces.map((prov) => (
+                      <SelectItem key={prov.id} value={prov.id}>
+                        {prov.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Kota/Kabupaten *</Label>
+                <Select
+                  value={formData.regencyId}
+                  onValueChange={(value) => setFormData({ ...formData, regencyId: value })}
+                  disabled={!formData.provinceId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Kota/Kabupaten" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regencies.map((reg) => (
+                      <SelectItem key={reg.id} value={reg.id}>
+                        {reg.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
