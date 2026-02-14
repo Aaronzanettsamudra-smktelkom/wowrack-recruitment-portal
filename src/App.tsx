@@ -32,6 +32,7 @@ import HRInterviews from "./pages/hr/HRInterviews";
 import HRAnalytics from "./pages/hr/HRAnalytics";
 import HRNewsManagement from "./pages/hr/HRNewsManagement";
 import HRJobOpenings from "./pages/hr/HRJobOpenings";
+import HRSurveys from "./pages/hr/HRSurveys";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminDepartments from "./pages/admin/AdminDepartments";
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/hr/interviews" element={<HRInterviews />} />
               <Route path="/hr/analytics" element={<HRAnalytics />} />
               <Route path="/hr/news" element={<HRNewsManagement />} />
+              <Route path="/hr/surveys" element={<HRSurveys />} />
 
               {/* Hiring Manager */}
               <Route path="/hiring-manager" element={<HiringManagerDashboard />} />
