@@ -54,6 +54,7 @@ const navItems: NavItem[] = [
   // Admin items
   { path: '/admin', label: 'Admin Dashboard', icon: LayoutDashboard, roles: ['admin'] },
   { path: '/admin/users', label: 'User Management', icon: Users, roles: ['admin'] },
+  { path: '/admin/departments', label: 'Departments', icon: Building2, roles: ['admin'] },
   { path: '/admin/settings', label: 'Settings', icon: Settings, roles: ['admin'] },
 ];
 
