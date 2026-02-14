@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Send } from "lucide-react";
 
@@ -19,6 +20,11 @@ interface MPPFormData {
   quantity: number;
   priority: 'high' | 'medium' | 'low';
   justification: string;
+  dateNeeded: string;
+  reportTo: string;
+  budgeted: 'budgeted' | 'not_budgeted';
+  recruitmentStatus: 'new' | 'replacement' | 'expansion';
+  specialNeeds: string;
 }
 
 const initialFormData: MPPFormData = {
@@ -32,6 +38,11 @@ const initialFormData: MPPFormData = {
   quantity: 1,
   priority: 'medium',
   justification: '',
+  dateNeeded: '',
+  reportTo: '',
+  budgeted: 'budgeted',
+  recruitmentStatus: 'new',
+  specialNeeds: '',
 };
 
 export default function HiringManagerMPP() {
@@ -62,7 +73,8 @@ export default function HiringManagerMPP() {
     e.preventDefault();
     
     if (!formData.title || !formData.aboutRole || !formData.responsibilities || 
-        !formData.requirements || !formData.benefits || !formData.justification) {
+        !formData.requirements || !formData.benefits || !formData.justification ||
+        !formData.dateNeeded || !formData.reportTo) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -123,9 +135,82 @@ export default function HiringManagerMPP() {
                   onChange={handleInputChange}
                   placeholder="e.g., Senior Software Engineer"
                 />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="dateNeeded">Date Needed *</Label>
+                <Input
+                  id="dateNeeded"
+                  name="dateNeeded"
+                  type="date"
+                  value={formData.dateNeeded}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="reportTo">Report To *</Label>
+                <Input
+                  id="reportTo"
+                  name="reportTo"
+                  value={formData.reportTo}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Engineering Manager"
+                />
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label>Budget Status *</Label>
+                <RadioGroup
+                  value={formData.budgeted}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, budgeted: value as 'budgeted' | 'not_budgeted' }))}
+                  className="flex gap-4 pt-2"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="budgeted" id="budgeted" />
+                    <Label htmlFor="budgeted" className="font-normal">Budgeted</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="not_budgeted" id="not_budgeted" />
+                    <Label htmlFor="not_budgeted" className="font-normal">Not Budgeted</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Recruitment Status *</Label>
+                <Select
+                  value={formData.recruitmentStatus}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, recruitmentStatus: value as 'new' | 'replacement' | 'expansion' }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New Position</SelectItem>
+                    <SelectItem value="replacement">Replacement</SelectItem>
+                    <SelectItem value="expansion">Expansion</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="specialNeeds">Special Needs</Label>
+              <Textarea
+                id="specialNeeds"
+                name="specialNeeds"
+                value={formData.specialNeeds}
+                onChange={handleInputChange}
+                placeholder="Any special requirements, certifications, tools, or accommodations needed..."
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
                 <Label htmlFor="quantity">Quantity *</Label>
                 <Input
                   id="quantity"
