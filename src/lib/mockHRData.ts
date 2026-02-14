@@ -63,7 +63,7 @@ export interface Interview {
   scheduledTime: string;
   duration: number;
   interviewers: string[];
-  type: 'hr' | 'technical' | 'final';
+  type: 'hr' | 'user' | 'director';
   status: 'scheduled' | 'completed' | 'cancelled';
   meetingLink?: string;
   aiScore?: number;
@@ -360,7 +360,7 @@ export const mockInterviews: Interview[] = [
     scheduledTime: '14:00',
     duration: 45,
     interviewers: ['Dewi Lestari', 'Teguh Marketing'],
-    type: 'technical',
+    type: 'user',
     status: 'scheduled',
     meetingLink: 'https://meet.google.com/klm-nopq-rst',
     aiScore: 85,
@@ -374,7 +374,7 @@ export const mockInterviews: Interview[] = [
     scheduledTime: '11:00',
     duration: 30,
     interviewers: ['Putri Maharani'],
-    type: 'final',
+    type: 'director',
     status: 'completed',
     aiScore: 94,
   },
