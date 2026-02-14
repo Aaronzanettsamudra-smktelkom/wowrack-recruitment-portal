@@ -34,6 +34,7 @@ import HRNewsManagement from "./pages/hr/HRNewsManagement";
 import HRJobOpenings from "./pages/hr/HRJobOpenings";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminDepartments from "./pages/admin/AdminDepartments";
 import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
 
@@ -89,6 +90,7 @@ const App = () => (
               {/* Admin */}
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/departments" element={<AdminDepartments />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
             </Route>
             
