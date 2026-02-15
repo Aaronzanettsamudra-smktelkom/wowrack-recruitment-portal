@@ -33,9 +33,11 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { mockCandidates, Candidate, pipelineStages } from '@/lib/mockHRData';
+import { mockCandidates, Candidate } from '@/lib/mockHRData';
+import { usePipelineStages } from '@/lib/pipelineStageStore';
 
 export default function HRCandidates() {
+  const pipelineStages = usePipelineStages();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDepartment, setFilterDepartment] = useState<string>('all');
   const [filterStage, setFilterStage] = useState<string>('all');

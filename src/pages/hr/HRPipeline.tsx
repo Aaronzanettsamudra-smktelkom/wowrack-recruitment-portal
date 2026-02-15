@@ -10,7 +10,8 @@ import {
   Briefcase,
   Filter,
   Search,
-  X
+  X,
+  Settings2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { mockCandidates, Candidate, PipelineStage, pipelineStages } from '@/lib/mockHRData';
+import { mockCandidates, Candidate, PipelineStage } from '@/lib/mockHRData';
+import { usePipelineStages } from '@/lib/pipelineStageStore';
+import StageEditorDialog from '@/components/hr/StageEditorDialog';
 
 interface JobOpening {
   position: string;
@@ -50,7 +53,9 @@ export default function HRPipeline() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
   const [scoreFilter, setScoreFilter] = useState<string>('all');
+  const [stageEditorOpen, setStageEditorOpen] = useState(false);
   const { toast } = useToast();
+  const pipelineStages = usePipelineStages();
 
   // Derive unique job openings from candidates
   const jobOpenings = useMemo<JobOpening[]>(() => {
@@ -91,7 +96,14 @@ export default function HRPipeline() {
     return result;
   }, [selectedJob, candidates, searchQuery, sourceFilter, scoreFilter]);
 
-  const getCandidatesByStage = (stage: PipelineStage) => {
+  const candidateCountByStage = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const jobCandidates = selectedJob ? candidates.filter(c => c.position === selectedJob) : candidates;
+    jobCandidates.forEach((c) => { counts[c.stage] = (counts[c.stage] || 0) + 1; });
+    return counts;
+  }, [candidates, selectedJob]);
+
+  const getCandidatesByStage = (stage: string) => {
     const stageCandidates = filteredCandidates.filter(c => c.stage === stage);
     if (stage === 'applied') {
       return stageCandidates.sort((a, b) => b.aiScore - a.aiScore);
@@ -99,7 +111,7 @@ export default function HRPipeline() {
     return stageCandidates;
   };
 
-  const moveCandidate = (candidateId: string, newStage: PipelineStage) => {
+  const moveCandidate = (candidateId: string, newStage: string) => {
     setCandidates(prev => prev.map(c => 
       c.id === candidateId ? { ...c, stage: newStage } : c
     ));
@@ -127,7 +139,22 @@ export default function HRPipeline() {
     }
   };
 
-  const getNextStage = (currentStage: PipelineStage): PipelineStage | null => {
+  const handleStagesSaved = (removedKeys: string[]) => {
+    if (removedKeys.length > 0) {
+      setCandidates(prev => prev.map(c =>
+        removedKeys.includes(c.stage) ? { ...c, stage: 'applied' as PipelineStage } : c
+      ));
+      const count = candidates.filter(c => removedKeys.includes(c.stage)).length;
+      if (count > 0) {
+        toast({
+          title: 'Candidates Moved',
+          description: `${count} candidate${count !== 1 ? 's' : ''} from deleted stage${removedKeys.length !== 1 ? 's' : ''} moved to Applied.`,
+        });
+      }
+    }
+  };
+
+  const getNextStage = (currentStage: string): string | null => {
     const currentIndex = pipelineStages.findIndex(s => s.key === currentStage);
     if (currentIndex < pipelineStages.length - 2) {
       return pipelineStages[currentIndex + 1].key;
@@ -135,7 +162,7 @@ export default function HRPipeline() {
     return null;
   };
 
-  const getPreviousStage = (currentStage: PipelineStage): PipelineStage | null => {
+  const getPreviousStage = (currentStage: string): string | null => {
     const currentIndex = pipelineStages.findIndex(s => s.key === currentStage);
     if (currentIndex > 0) {
       return pipelineStages[currentIndex - 1].key;
@@ -204,6 +231,9 @@ export default function HRPipeline() {
             </p>
           </div>
         </div>
+        <Button variant="outline" size="sm" onClick={() => setStageEditorOpen(true)}>
+          <Settings2 className="h-4 w-4 mr-1" /> Customize Stages
+        </Button>
       </div>
 
       {/* Filters */}
@@ -392,6 +422,14 @@ export default function HRPipeline() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <StageEditorDialog
+        open={stageEditorOpen}
+        onOpenChange={setStageEditorOpen}
+        currentStages={pipelineStages}
+        candidateCountByStage={candidateCountByStage}
+        onStagesSaved={handleStagesSaved}
+      />
     </div>
   );
 }

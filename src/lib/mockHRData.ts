@@ -44,15 +44,7 @@ export interface TimelineEvent {
   user?: string;
 }
 
-export type PipelineStage = 
-  | 'applied' 
-  | 'selected' 
-  | 'contacted' 
-  | 'hr-interview' 
-  | 'user-interview' 
-  | 'salary-negotiation' 
-  | 'hired' 
-  | 'rejected';
+export type PipelineStage = string;
 
 export interface Interview {
   id: string;
