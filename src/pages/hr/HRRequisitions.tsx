@@ -325,8 +325,8 @@ export default function HRRequisitions() {
                 </div>
 
                 <div>
-                  <p className="text-muted-foreground text-sm">Special Needs</p>
-                  <p className="text-sm font-medium">{detailRequest.specialNeeds || '-'}</p>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Special Needs</h4>
+                  <p className="text-sm text-muted-foreground">{detailRequest.specialNeeds || '-'}</p>
                 </div>
 
                 {detailRequest.hrFeedback && (
