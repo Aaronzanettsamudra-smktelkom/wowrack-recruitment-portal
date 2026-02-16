@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Trash2, GripVertical, Settings2, AlertTriangle } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
@@ -32,12 +32,15 @@ export default function StageEditorDialog({
   const [removedStageKeys, setRemovedStageKeys] = useState<string[]>([]);
   const { toast } = useToast();
 
-  // Reset draft when dialog opens
-  const handleOpenChange = (v: boolean) => {
-    if (v) {
+  // Initialize draft when dialog opens
+  useEffect(() => {
+    if (open) {
       setDraft([...currentStages]);
       setNewLabel('');
     }
+  }, [open, currentStages]);
+
+  const handleOpenChange = (v: boolean) => {
     onOpenChange(v);
   };
 
