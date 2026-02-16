@@ -6,6 +6,8 @@ export interface PipelineStageConfig {
   color: string;
 }
 
+const STORAGE_KEY = 'pipeline-stages';
+
 const STAGE_COLORS = [
   'bg-blue-500', 'bg-purple-500', 'bg-indigo-500', 'bg-cyan-500',
   'bg-teal-500', 'bg-amber-500', 'bg-pink-500', 'bg-orange-500',
@@ -26,7 +28,18 @@ const DEFAULT_STAGES: PipelineStageConfig[] = [
 // Fixed stages that cannot be removed
 export const FIXED_STAGES = ['applied', 'hired', 'rejected'];
 
-let stages: PipelineStageConfig[] = [...DEFAULT_STAGES];
+function loadStages(): PipelineStageConfig[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return [...DEFAULT_STAGES];
+}
+
+let stages: PipelineStageConfig[] = loadStages();
 let listeners: Set<() => void> = new Set();
 
 function emit() {
@@ -44,6 +57,9 @@ function getSnapshot() {
 
 export function setStages(newStages: PipelineStageConfig[]) {
   stages = newStages;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newStages));
+  } catch {}
   emit();
 }
 
