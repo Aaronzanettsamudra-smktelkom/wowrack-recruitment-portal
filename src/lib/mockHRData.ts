@@ -16,6 +16,11 @@ export interface MPPRequest {
   status: 'pending' | 'approved' | 'rejected' | 'revision';
   submittedDate: string;
   hrFeedback?: string;
+  dateNeeded: string;
+  reportTo: string;
+  budgeted: 'budgeted' | 'not_budgeted';
+  recruitmentStatus: 'new' | 'replacement' | 'expansion';
+  specialNeeds?: string;
 }
 
 export interface Candidate {
@@ -98,6 +103,11 @@ export const mockMPPRequests: MPPRequest[] = [
     priority: 'high',
     status: 'pending',
     submittedDate: '2025-01-10',
+    dateNeeded: '2025-03-01',
+    reportTo: 'VP of Engineering',
+    budgeted: 'budgeted',
+    recruitmentStatus: 'expansion',
+    specialNeeds: 'Must be comfortable with on-call rotation',
   },
   {
     id: 'mpp-2',
@@ -116,6 +126,10 @@ export const mockMPPRequests: MPPRequest[] = [
     priority: 'medium',
     status: 'pending',
     submittedDate: '2025-01-08',
+    dateNeeded: '2025-02-15',
+    reportTo: 'Marketing Director',
+    budgeted: 'budgeted',
+    recruitmentStatus: 'replacement',
   },
   {
     id: 'mpp-3',
@@ -134,6 +148,11 @@ export const mockMPPRequests: MPPRequest[] = [
     priority: 'urgent',
     status: 'pending',
     submittedDate: '2025-01-05',
+    dateNeeded: '2025-02-01',
+    reportTo: 'Head of Analytics',
+    budgeted: 'not_budgeted',
+    recruitmentStatus: 'new',
+    specialNeeds: 'Experience with healthcare data preferred',
   },
   {
     id: 'mpp-4',
@@ -152,6 +171,10 @@ export const mockMPPRequests: MPPRequest[] = [
     priority: 'low',
     status: 'approved',
     submittedDate: '2025-01-02',
+    dateNeeded: '2025-03-15',
+    reportTo: 'Head of Design',
+    budgeted: 'budgeted',
+    recruitmentStatus: 'expansion',
   },
 ];
 

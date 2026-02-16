@@ -306,7 +306,30 @@ export default function HRRequisitions() {
                     <p className="text-muted-foreground">Submitted Date</p>
                     <p className="font-medium">{detailRequest.submittedDate}</p>
                   </div>
+                  <div>
+                    <p className="text-muted-foreground">Date Needed</p>
+                    <p className="font-medium">{detailRequest.dateNeeded}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Report To</p>
+                    <p className="font-medium">{detailRequest.reportTo}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Budget Status</p>
+                    <p className="font-medium capitalize">{detailRequest.budgeted === 'budgeted' ? 'Budgeted' : 'Not Budgeted'}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Recruitment Status</p>
+                    <p className="font-medium capitalize">{detailRequest.recruitmentStatus}</p>
+                  </div>
                 </div>
+
+                {detailRequest.specialNeeds && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground mb-2">Special Needs</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.specialNeeds}</p>
+                  </div>
+                )}
 
                 {detailRequest.hrFeedback && (
                   <div className="p-4 bg-muted rounded-lg">
