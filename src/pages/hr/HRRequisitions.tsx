@@ -299,28 +299,28 @@ export default function HRRequisitions() {
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-muted-foreground">Requested By</p>
-                    <p className="font-medium">{detailRequest.requestedBy}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Requested By</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.requestedBy}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Submitted Date</p>
-                    <p className="font-medium">{detailRequest.submittedDate}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Submitted Date</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.submittedDate}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Date Needed</p>
-                    <p className="font-medium">{detailRequest.dateNeeded || '-'}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Date Needed</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.dateNeeded || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Report To</p>
-                    <p className="font-medium">{detailRequest.reportTo || '-'}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Report To</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.reportTo || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Budget Status</p>
-                    <p className="font-medium capitalize">{detailRequest.budgeted ? (detailRequest.budgeted === 'budgeted' ? 'Budgeted' : 'Not Budgeted') : '-'}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Budget Status</h4>
+                    <p className="text-sm text-muted-foreground capitalize">{detailRequest.budgeted ? (detailRequest.budgeted === 'budgeted' ? 'Budgeted' : 'Not Budgeted') : '-'}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Recruitment Status</p>
-                    <p className="font-medium capitalize">{detailRequest.recruitmentStatus || '-'}</p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Recruitment Status</h4>
+                    <p className="text-sm text-muted-foreground capitalize">{detailRequest.recruitmentStatus || '-'}</p>
                   </div>
                 </div>
 
