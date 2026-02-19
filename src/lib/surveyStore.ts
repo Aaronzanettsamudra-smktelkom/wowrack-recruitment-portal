@@ -13,6 +13,15 @@ export interface SurveyResponse {
   communicationRating: number;
   feedback: string;
   wouldRecommend: boolean;
+  // Extended fields
+  recruiterRating: number;
+  interviewExperienceRating: number;
+  fairnessRating: number;
+  timeToHireRating: number;
+  npsScore: number;
+  highlights: string;
+  improvements: string;
+  applyAgain: boolean | null;
 }
 
 let surveys: SurveyResponse[] = [
@@ -29,6 +38,14 @@ let surveys: SurveyResponse[] = [
     communicationRating: 5,
     feedback: 'The recruitment process was smooth and professional. The team was very welcoming during the interviews.',
     wouldRecommend: true,
+    recruiterRating: 5,
+    interviewExperienceRating: 4,
+    fairnessRating: 5,
+    timeToHireRating: 4,
+    npsScore: 9,
+    highlights: 'Very responsive recruiter and structured interview process.',
+    improvements: 'Could provide more timeline clarity between stages.',
+    applyAgain: true,
   },
 ];
 

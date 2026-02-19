@@ -57,6 +57,7 @@ export default function QuickApply() {
   const [filteredUniversities, setFilteredUniversities] = useState<string[]>([]);
   const [selectedUniversity, setSelectedUniversity] = useState("");
   const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
+  const [universityLevel, setUniversityLevel] = useState("");
   const universityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -343,6 +344,7 @@ export default function QuickApply() {
                   setHighSchoolName("");
                   setSelectedUniversity("");
                   setUniversitySearch("");
+                  setUniversityLevel("");
                 }}
                 className="flex gap-6"
               >
@@ -352,7 +354,7 @@ export default function QuickApply() {
                 </div>
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="university" id="edu-university" />
-                  <Label htmlFor="edu-university" className="font-normal cursor-pointer">Universitas</Label>
+                  <Label htmlFor="edu-university" className="font-normal cursor-pointer">Universitas / Politeknik</Label>
                 </div>
               </RadioGroup>
 
@@ -364,41 +366,56 @@ export default function QuickApply() {
                   placeholder="Nama SMA/SMK"
                 />
               ) : (
-                <div className="relative" ref={universityRef}>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      required={educationType === "university"}
-                      value={universitySearch}
-                      onChange={(e) => {
-                        setUniversitySearch(e.target.value);
-                        setSelectedUniversity("");
-                      }}
-                      placeholder="Cari nama universitas..."
-                      className="pl-9"
-                    />
-                  </div>
-                  {selectedUniversity && (
-                    <p className="text-xs text-muted-foreground mt-1">Dipilih: <span className="text-foreground font-medium">{selectedUniversity}</span></p>
-                  )}
-                  {showUniversityDropdown && filteredUniversities.length > 0 && (
-                    <div className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto rounded-md border border-border bg-popover shadow-md">
-                      {filteredUniversities.map((uni, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-                          onClick={() => {
-                            setSelectedUniversity(uni);
-                            setUniversitySearch(uni);
-                            setShowUniversityDropdown(false);
-                          }}
-                        >
-                          <span className="font-medium">{uni}</span>
-                        </button>
-                      ))}
+                <div className="space-y-3">
+                  <Select value={universityLevel} onValueChange={setUniversityLevel} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih Jenjang Pendidikan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="D3">D3 – Diploma 3</SelectItem>
+                      <SelectItem value="D4">D4 – Diploma 4 / Sarjana Terapan</SelectItem>
+                      <SelectItem value="S1">S1 – Sarjana (Undergraduate)</SelectItem>
+                      <SelectItem value="S2">S2 – Magister (Master)</SelectItem>
+                      <SelectItem value="S3">S3 – Doktor (Doctorate)</SelectItem>
+                      <SelectItem value="Other">Lainnya</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="relative" ref={universityRef}>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        required={educationType === "university"}
+                        value={universitySearch}
+                        onChange={(e) => {
+                          setUniversitySearch(e.target.value);
+                          setSelectedUniversity("");
+                        }}
+                        placeholder="Cari nama universitas..."
+                        className="pl-9"
+                      />
                     </div>
-                  )}
+                    {selectedUniversity && (
+                      <p className="text-xs text-muted-foreground mt-1">Dipilih: <span className="text-foreground font-medium">{selectedUniversity}</span></p>
+                    )}
+                    {showUniversityDropdown && filteredUniversities.length > 0 && (
+                      <div className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto rounded-md border border-border bg-popover shadow-md">
+                        {filteredUniversities.map((uni, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                            onClick={() => {
+                              setSelectedUniversity(uni);
+                              setUniversitySearch(uni);
+                              setShowUniversityDropdown(false);
+                            }}
+                          >
+                            <span className="font-medium">{uni}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

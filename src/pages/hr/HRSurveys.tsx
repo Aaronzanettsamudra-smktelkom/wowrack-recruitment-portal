@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, Star, Eye, ClipboardList, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Search, Star, Eye, ClipboardList, ThumbsUp, ThumbsDown, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function Stars({ count }: { count: number }) {
@@ -22,7 +23,7 @@ function Stars({ count }: { count: number }) {
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
-          className={cn('h-3.5 w-3.5', s <= count ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20')}
+          className={cn('h-3.5 w-3.5', s <= count ? 'fill-secondary text-secondary' : 'text-muted-foreground/20')}
         />
       ))}
     </div>
@@ -55,6 +56,9 @@ export default function HRSurveys() {
   const avgOverall = surveys.length
     ? (surveys.reduce((sum, s) => sum + s.overallRating, 0) / surveys.length).toFixed(1)
     : '0';
+  const avgNps = surveys.length
+    ? (surveys.reduce((sum, s) => sum + (s.npsScore ?? 0), 0) / surveys.length).toFixed(1)
+    : '0';
   const recommendRate = surveys.length
     ? Math.round((surveys.filter((s) => s.wouldRecommend).length / surveys.length) * 100)
     : 0;
@@ -67,7 +71,7 @@ export default function HRSurveys() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary/10">
@@ -81,19 +85,30 @@ export default function HRSurveys() {
         </Card>
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-amber-500/10">
-              <Star className="h-5 w-5 text-amber-500" />
+            <div className="p-2 rounded-lg bg-secondary/10">
+              <Star className="h-5 w-5 text-secondary" />
             </div>
             <div>
               <p className="text-2xl font-bold">{avgOverall}</p>
-              <p className="text-xs text-muted-foreground">Avg. Overall Rating</p>
+              <p className="text-xs text-muted-foreground">Avg. Rating</p>
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-green-500/10">
-              <ThumbsUp className="h-5 w-5 text-green-500" />
+            <div className="p-2 rounded-lg bg-primary/10">
+              <TrendingUp className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{avgNps}</p>
+              <p className="text-xs text-muted-foreground">Avg. NPS Score</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <ThumbsUp className="h-5 w-5 text-primary" />
             </div>
             <div>
               <p className="text-2xl font-bold">{recommendRate}%</p>
@@ -154,7 +169,7 @@ export default function HRSurveys() {
                   <TableCell><Stars count={s.overallRating} /></TableCell>
                   <TableCell>
                     {s.wouldRecommend ? (
-                      <ThumbsUp className="h-4 w-4 text-green-500" />
+                      <ThumbsUp className="h-4 w-4 text-primary" />
                     ) : (
                       <ThumbsDown className="h-4 w-4 text-destructive" />
                     )}
@@ -183,7 +198,7 @@ export default function HRSurveys() {
 
       {/* Detail Dialog */}
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Survey Response</DialogTitle>
             <DialogDescription>{selected?.candidateName} — {selected?.position}</DialogDescription>
@@ -194,29 +209,84 @@ export default function HRSurveys() {
                 <span className="text-sm text-muted-foreground">Outcome</span>
                 <Badge variant={selected.stage === 'Hired' ? 'default' : 'destructive'}>{selected.stage}</Badge>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Overall Experience</span>
-                <Stars count={selected.overallRating} />
+
+              <Separator />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Recruiter & Process</p>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Recruiter Responsiveness</span>
+                  <Stars count={selected.recruiterRating ?? 0} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Communication Quality</span>
+                  <Stars count={selected.communicationRating} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Speed of Process</span>
+                  <Stars count={selected.timeToHireRating ?? 0} />
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Recruitment Process</span>
-                <Stars count={selected.processRating} />
+
+              <Separator />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Interview Experience</p>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Interview Structure</span>
+                  <Stars count={selected.processRating} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Interviewer Quality</span>
+                  <Stars count={selected.interviewExperienceRating ?? 0} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Process Fairness</span>
+                  <Stars count={selected.fairnessRating ?? 0} />
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Communication</span>
-                <Stars count={selected.communicationRating} />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Would Recommend</span>
-                {selected.wouldRecommend ? (
-                  <span className="text-green-600 text-sm font-medium flex items-center gap-1"><ThumbsUp className="h-3.5 w-3.5" /> Yes</span>
-                ) : (
-                  <span className="text-destructive text-sm font-medium flex items-center gap-1"><ThumbsDown className="h-3.5 w-3.5" /> No</span>
+              {selected.highlights && (
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">What stood out positively</span>
+                  <p className="text-sm bg-muted/50 rounded-lg p-3">{selected.highlights}</p>
+                </div>
+              )}
+
+              <Separator />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Overall Impression</p>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Overall Experience</span>
+                  <Stars count={selected.overallRating} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">NPS Score</span>
+                  <span className="text-sm font-semibold">{selected.npsScore ?? '—'} / 10</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Would Recommend</span>
+                  {selected.wouldRecommend ? (
+                    <span className="text-primary text-sm font-medium flex items-center gap-1"><ThumbsUp className="h-3.5 w-3.5" /> Yes</span>
+                  ) : (
+                    <span className="text-destructive text-sm font-medium flex items-center gap-1"><ThumbsDown className="h-3.5 w-3.5" /> No</span>
+                  )}
+                </div>
+                {selected.applyAgain !== null && selected.applyAgain !== undefined && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Would Apply Again</span>
+                    <span className="text-sm font-medium capitalize">
+                      {selected.applyAgain === true ? 'Yes' : selected.applyAgain === false ? 'No' : 'Maybe'}
+                    </span>
+                  </div>
                 )}
               </div>
+              {selected.improvements && (
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground">Suggested Improvements</span>
+                  <p className="text-sm bg-muted/50 rounded-lg p-3">{selected.improvements}</p>
+                </div>
+              )}
               {selected.feedback && (
                 <div className="space-y-1">
-                  <span className="text-sm text-muted-foreground">Additional Feedback</span>
+                  <span className="text-xs text-muted-foreground">Additional Comments</span>
                   <p className="text-sm bg-muted/50 rounded-lg p-3">{selected.feedback}</p>
                 </div>
               )}
