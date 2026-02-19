@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Upload, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Check, Loader2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { jobs } from "@/lib/mockData";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -20,6 +21,15 @@ interface Regency {
   id: string;
   province_id: string;
   name: string;
+}
+
+interface University {
+  name: string;
+  country: string;
+  "state-province": string | null;
+  domains: string[];
+  web_pages: string[];
+  alpha_two_code: string;
 }
 
 export default function QuickApply() {
@@ -47,6 +57,17 @@ export default function QuickApply() {
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+  // Education state
+  const [educationType, setEducationType] = useState<"highschool" | "university">("highschool");
+  const [highSchoolName, setHighSchoolName] = useState("");
+  const [universitySearch, setUniversitySearch] = useState("");
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [selectedUniversity, setSelectedUniversity] = useState("");
+  const [universityLoading, setUniversityLoading] = useState(false);
+  const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
+  const universityRef = useRef<HTMLDivElement>(null);
+  const universityDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
       .then((res) => res.json())
@@ -64,6 +85,36 @@ export default function QuickApply() {
         .catch(() => toast.error("Gagal memuat data kota/kabupaten"));
     }
   }, [formData.provinceId]);
+
+  useEffect(() => {
+    if (universitySearch.length < 2) {
+      setUniversities([]);
+      setShowUniversityDropdown(false);
+      return;
+    }
+    if (universityDebounceRef.current) clearTimeout(universityDebounceRef.current);
+    universityDebounceRef.current = setTimeout(() => {
+      setUniversityLoading(true);
+      fetch(`https://universities.hipolabs.com/search?name=${encodeURIComponent(universitySearch)}`)
+        .then((res) => res.json())
+        .then((data: University[]) => {
+          setUniversities(data.slice(0, 20));
+          setShowUniversityDropdown(true);
+        })
+        .catch(() => toast.error("Failed to load universities"))
+        .finally(() => setUniversityLoading(false));
+    }, 400);
+  }, [universitySearch]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (universityRef.current && !universityRef.current.contains(e.target as Node)) {
+        setShowUniversityDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   if (!job) {
     return (
@@ -297,6 +348,80 @@ export default function QuickApply() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Education */}
+            <div className="space-y-3">
+              <Label>Pendidikan Terakhir *</Label>
+              <RadioGroup
+                value={educationType}
+                onValueChange={(val) => {
+                  setEducationType(val as "highschool" | "university");
+                  setHighSchoolName("");
+                  setSelectedUniversity("");
+                  setUniversitySearch("");
+                }}
+                className="flex gap-6"
+              >
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="highschool" id="edu-highschool" />
+                  <Label htmlFor="edu-highschool" className="font-normal cursor-pointer">SMA/SMK (High School / Vocational)</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="university" id="edu-university" />
+                  <Label htmlFor="edu-university" className="font-normal cursor-pointer">Universitas</Label>
+                </div>
+              </RadioGroup>
+
+              {educationType === "highschool" ? (
+                <Input
+                  required
+                  value={highSchoolName}
+                  onChange={(e) => setHighSchoolName(e.target.value)}
+                  placeholder="Nama SMA/SMK"
+                />
+              ) : (
+                <div className="relative" ref={universityRef}>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      required={educationType === "university"}
+                      value={universitySearch}
+                      onChange={(e) => {
+                        setUniversitySearch(e.target.value);
+                        setSelectedUniversity("");
+                      }}
+                      placeholder="Cari nama universitas..."
+                      className="pl-9"
+                    />
+                    {universityLoading && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
+                  {selectedUniversity && (
+                    <p className="text-xs text-muted-foreground mt-1">Dipilih: <span className="text-foreground font-medium">{selectedUniversity}</span></p>
+                  )}
+                  {showUniversityDropdown && universities.length > 0 && (
+                    <div className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto rounded-md border border-border bg-popover shadow-md">
+                      {universities.map((uni, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                          onClick={() => {
+                            setSelectedUniversity(uni.name);
+                            setUniversitySearch(uni.name);
+                            setShowUniversityDropdown(false);
+                          }}
+                        >
+                          <span className="font-medium">{uni.name}</span>
+                          <span className="text-muted-foreground ml-2 text-xs">{uni.country}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
