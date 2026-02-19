@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { jobs } from "@/lib/mockData";
+import { universities as universityList } from "@/lib/universityData";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -23,14 +24,6 @@ interface Regency {
   name: string;
 }
 
-interface University {
-  name: string;
-  country: string;
-  "state-province": string | null;
-  domains: string[];
-  web_pages: string[];
-  alpha_two_code: string;
-}
 
 export default function QuickApply() {
   const { id } = useParams();
@@ -61,12 +54,10 @@ export default function QuickApply() {
   const [educationType, setEducationType] = useState<"highschool" | "university">("highschool");
   const [highSchoolName, setHighSchoolName] = useState("");
   const [universitySearch, setUniversitySearch] = useState("");
-  const [universities, setUniversities] = useState<University[]>([]);
+  const [filteredUniversities, setFilteredUniversities] = useState<string[]>([]);
   const [selectedUniversity, setSelectedUniversity] = useState("");
-  const [universityLoading, setUniversityLoading] = useState(false);
   const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
   const universityRef = useRef<HTMLDivElement>(null);
-  const universityDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
@@ -88,22 +79,14 @@ export default function QuickApply() {
 
   useEffect(() => {
     if (universitySearch.length < 2) {
-      setUniversities([]);
+      setFilteredUniversities([]);
       setShowUniversityDropdown(false);
       return;
     }
-    if (universityDebounceRef.current) clearTimeout(universityDebounceRef.current);
-    universityDebounceRef.current = setTimeout(() => {
-      setUniversityLoading(true);
-      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://universities.hipolabs.com/search?name=${universitySearch}`)}`)
-        .then((res) => res.json())
-        .then((data: University[]) => {
-          setUniversities(data.slice(0, 20));
-          setShowUniversityDropdown(true);
-        })
-        .catch(() => toast.error("Failed to load universities"))
-        .finally(() => setUniversityLoading(false));
-    }, 400);
+    const query = universitySearch.toLowerCase();
+    const results = universityList.filter((u) => u.toLowerCase().includes(query)).slice(0, 20);
+    setFilteredUniversities(results);
+    setShowUniversityDropdown(results.length > 0);
   }, [universitySearch]);
 
   useEffect(() => {
@@ -394,28 +377,24 @@ export default function QuickApply() {
                       placeholder="Cari nama universitas..."
                       className="pl-9"
                     />
-                    {universityLoading && (
-                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-                    )}
                   </div>
                   {selectedUniversity && (
                     <p className="text-xs text-muted-foreground mt-1">Dipilih: <span className="text-foreground font-medium">{selectedUniversity}</span></p>
                   )}
-                  {showUniversityDropdown && universities.length > 0 && (
+                  {showUniversityDropdown && filteredUniversities.length > 0 && (
                     <div className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto rounded-md border border-border bg-popover shadow-md">
-                      {universities.map((uni, idx) => (
+                      {filteredUniversities.map((uni, idx) => (
                         <button
                           key={idx}
                           type="button"
                           className="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
                           onClick={() => {
-                            setSelectedUniversity(uni.name);
-                            setUniversitySearch(uni.name);
+                            setSelectedUniversity(uni);
+                            setUniversitySearch(uni);
                             setShowUniversityDropdown(false);
                           }}
                         >
-                          <span className="font-medium">{uni.name}</span>
-                          <span className="text-muted-foreground ml-2 text-xs">{uni.country}</span>
+                          <span className="font-medium">{uni}</span>
                         </button>
                       ))}
                     </div>
