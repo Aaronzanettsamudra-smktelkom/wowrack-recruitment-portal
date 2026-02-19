@@ -95,7 +95,7 @@ export default function QuickApply() {
     if (universityDebounceRef.current) clearTimeout(universityDebounceRef.current);
     universityDebounceRef.current = setTimeout(() => {
       setUniversityLoading(true);
-      fetch(`https://universities.hipolabs.com/search?name=${encodeURIComponent(universitySearch)}`)
+      fetch(`https://corsproxy.io/?url=${encodeURIComponent(`https://universities.hipolabs.com/search?name=${universitySearch}`)}`)
         .then((res) => res.json())
         .then((data: University[]) => {
           setUniversities(data.slice(0, 20));
