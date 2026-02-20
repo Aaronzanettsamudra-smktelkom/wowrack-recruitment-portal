@@ -150,7 +150,7 @@ export default function SurveyDialog({
         <div className="space-y-6 py-2">
           {/* Position Applied For */}
           <div className="space-y-2">
-            <Label htmlFor="positionApplied" className="text-sm font-medium">Position Applied For *</Label>
+            <Label htmlFor="positionApplied" className="text-sm font-medium">Position Applied For <span className="text-destructive">*</span></Label>
             <Input
               id="positionApplied"
               value={positionApplied}
