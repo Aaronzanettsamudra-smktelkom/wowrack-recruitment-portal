@@ -43,9 +43,9 @@ function ScaleSelector({ value, onChange, label }: {
 }) {
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium leading-snug">{label}</Label>
+      <Label className="text-sm font-medium leading-snug">{label} <span className="text-destructive">*</span></Label>
       <div className="flex items-center gap-1">
-        <span className="text-[10px] text-muted-foreground w-16 text-right pr-2 shrink-0">Disagree</span>
+        <span className="text-[10px] text-muted-foreground w-16 text-right pr-2 shrink-0">Not Agree</span>
         <div className="flex gap-1 flex-1 justify-center">
           {[1,2,3,4,5,6,7,8,9,10].map((n) => (
             <button
