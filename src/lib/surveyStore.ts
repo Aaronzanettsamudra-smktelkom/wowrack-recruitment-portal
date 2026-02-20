@@ -8,20 +8,19 @@ export interface SurveyResponse {
   department: string;
   stage: 'Hired' | 'Rejected';
   submittedAt: string;
-  overallRating: number;
-  processRating: number;
-  communicationRating: number;
-  feedback: string;
-  wouldRecommend: boolean;
-  // Extended fields
-  recruiterRating: number;
-  interviewExperienceRating: number;
-  fairnessRating: number;
-  timeToHireRating: number;
-  npsScore: number;
-  highlights: string;
-  improvements: string;
-  applyAgain: boolean | null;
+  // New fields
+  positionApplied: string;
+  easyApplication: number;
+  wellOrganized: number;
+  timelyCommunication: number;
+  supportiveRecruiter: number;
+  feltRespected: number;
+  fairInterview: number;
+  clearUnderstanding: number;
+  wouldApplyAgain: number;
+  wouldRecommend: number;
+  improvementSuggestion: string;
+  contactEmail: string;
 }
 
 let surveys: SurveyResponse[] = [
@@ -33,19 +32,18 @@ let surveys: SurveyResponse[] = [
     department: 'Engineering',
     stage: 'Hired',
     submittedAt: '2025-01-28',
-    overallRating: 5,
-    processRating: 4,
-    communicationRating: 5,
-    feedback: 'The recruitment process was smooth and professional. The team was very welcoming during the interviews.',
-    wouldRecommend: true,
-    recruiterRating: 5,
-    interviewExperienceRating: 4,
-    fairnessRating: 5,
-    timeToHireRating: 4,
-    npsScore: 9,
-    highlights: 'Very responsive recruiter and structured interview process.',
-    improvements: 'Could provide more timeline clarity between stages.',
-    applyAgain: true,
+    positionApplied: 'DevOps Engineer',
+    easyApplication: 9,
+    wellOrganized: 8,
+    timelyCommunication: 9,
+    supportiveRecruiter: 10,
+    feltRespected: 9,
+    fairInterview: 8,
+    clearUnderstanding: 9,
+    wouldApplyAgain: 10,
+    wouldRecommend: 9,
+    improvementSuggestion: 'Could provide more timeline clarity between stages.',
+    contactEmail: 'andi@example.com',
   },
 ];
 

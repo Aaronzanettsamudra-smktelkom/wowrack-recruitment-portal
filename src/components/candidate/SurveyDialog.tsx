@@ -3,11 +3,9 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Progress } from '@/components/ui/progress';
-import { Star, ChevronRight, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SurveyDialogProps {
@@ -22,345 +20,190 @@ interface SurveyDialogProps {
     position: string;
     department: string;
     stage: 'Hired' | 'Rejected';
-    overallRating: number;
-    processRating: number;
-    communicationRating: number;
-    feedback: string;
-    wouldRecommend: boolean;
     candidateName: string;
-    // Extended fields
-    recruiterRating: number;
-    interviewExperienceRating: number;
-    fairnessRating: number;
-    timeToHireRating: number;
-    npsScore: number;
-    highlights: string;
-    improvements: string;
-    applyAgain: boolean | null;
+    positionApplied: string;
+    easyApplication: number;
+    wellOrganized: number;
+    timelyCommunication: number;
+    supportiveRecruiter: number;
+    feltRespected: number;
+    fairInterview: number;
+    clearUnderstanding: number;
+    wouldApplyAgain: number;
+    wouldRecommend: number;
+    improvementSuggestion: string;
+    contactEmail: string;
   }) => void;
 }
 
-function StarRating({ value, onChange, label, description }: {
+function ScaleSelector({ value, onChange, label }: {
   value: number;
   onChange: (v: number) => void;
   label: string;
-  description?: string;
 }) {
-  const [hovered, setHovered] = useState(0);
-  const labels = ['', 'Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'];
-
   return (
-    <div className="space-y-1.5">
-      <div>
-        <Label className="text-sm font-medium">{label}</Label>
-        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
+    <div className="space-y-2">
+      <Label className="text-sm font-medium leading-snug">{label}</Label>
+      <div className="flex items-center gap-1">
+        <span className="text-[10px] text-muted-foreground w-16 text-right pr-2 shrink-0">Disagree</span>
+        <div className="flex gap-1 flex-1 justify-center">
+          {[1,2,3,4,5,6,7,8,9,10].map((n) => (
             <button
-              key={star}
+              key={n}
               type="button"
-              onClick={() => onChange(star)}
-              onMouseEnter={() => setHovered(star)}
-              onMouseLeave={() => setHovered(0)}
-              className="p-0.5 hover:scale-110 transition-transform"
+              onClick={() => onChange(n)}
+              className={cn(
+                'w-8 h-8 rounded-lg text-xs font-medium border transition-all',
+                value === n
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                  : 'bg-background border-border hover:border-primary/50 text-foreground'
+              )}
             >
-              <Star
-                className={cn(
-                  'h-6 w-6 transition-colors',
-                  star <= (hovered || value)
-                    ? 'fill-secondary text-secondary'
-                    : 'text-muted-foreground/20'
-                )}
-              />
+              {n}
             </button>
           ))}
         </div>
-        {(hovered || value) > 0 && (
-          <span className="text-xs text-muted-foreground">{labels[hovered || value]}</span>
-        )}
+        <span className="text-[10px] text-muted-foreground w-16 pl-2 shrink-0">Agree</span>
       </div>
     </div>
   );
 }
 
-function NPSSelector({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  return (
-    <div className="space-y-2">
-      <Label className="text-sm font-medium">
-        How likely are you to recommend others to apply to Wowrack? *
-      </Label>
-      <p className="text-xs text-muted-foreground">0 = Not at all likely, 10 = Extremely likely</p>
-      <div className="flex flex-wrap gap-1.5 mt-2">
-        {[0,1,2,3,4,5,6,7,8,9,10].map((n) => (
-          <button
-            key={n}
-            type="button"
-            onClick={() => onChange(n)}
-            className={cn(
-              'w-9 h-9 rounded-lg text-sm font-medium border transition-all',
-              value === n
-                ? n >= 9
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : n >= 7
-                  ? 'bg-secondary text-secondary-foreground border-secondary'
-                  : 'bg-destructive text-destructive-foreground border-destructive'
-                : 'bg-background border-border hover:border-primary/50 text-foreground'
-            )}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-      <div className="flex justify-between text-xs text-muted-foreground px-0.5">
-        <span>Not likely</span>
-        <span>Extremely likely</span>
-      </div>
-    </div>
-  );
-}
+const QUESTIONS = [
+  { key: 'easyApplication', label: 'The job application process was easy.' },
+  { key: 'wellOrganized', label: 'The recruitment process felt well-organized and easy to follow.' },
+  { key: 'timelyCommunication', label: 'Communication from the recruitment team was timely and clear.' },
+  { key: 'supportiveRecruiter', label: 'The recruiter was supportive, professional, and helpful throughout the process.' },
+  { key: 'feltRespected', label: 'I felt respected and valued as a candidate during the recruitment process.' },
+  { key: 'fairInterview', label: 'The interview and assessment process felt fair and relevant to the role.' },
+  { key: 'clearUnderstanding', label: 'I gained a clear understanding of the role and expectations during the recruitment process.' },
+  { key: 'wouldApplyAgain', label: 'Based on this experience, I would consider applying for future opportunities at Wowrack.' },
+  { key: 'wouldRecommend', label: 'I would recommend applying to Wowrack to a friend or colleague.' },
+] as const;
 
-const STEPS = [
-  { title: 'Recruiter & Process', subtitle: 'Rate your interactions with the hiring team' },
-  { title: 'Interview Experience', subtitle: 'Share your interview experience' },
-  { title: 'Overall Impression', subtitle: 'Your overall thoughts on the process' },
-];
+type RatingKey = typeof QUESTIONS[number]['key'];
 
 export default function SurveyDialog({
   open, onOpenChange, applicationId, position, department, stage, onSubmit,
 }: SurveyDialogProps) {
-  const [step, setStep] = useState(0);
-
-  // Step 1 – Recruiter & Process
-  const [communicationRating, setCommunicationRating] = useState(0);
-  const [recruiterRating, setRecruiterRating] = useState(0);
-  const [timeToHireRating, setTimeToHireRating] = useState(0);
-
-  // Step 2 – Interview Experience
-  const [processRating, setProcessRating] = useState(0);
-  const [interviewExperienceRating, setInterviewExperienceRating] = useState(0);
-  const [fairnessRating, setFairnessRating] = useState(0);
-  const [highlights, setHighlights] = useState('');
-
-  // Step 3 – Overall
-  const [overallRating, setOverallRating] = useState(0);
-  const [npsScore, setNpsScore] = useState<number>(-1);
-  const [wouldRecommend, setWouldRecommend] = useState('');
-  const [applyAgain, setApplyAgain] = useState('');
-  const [improvements, setImprovements] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [positionApplied, setPositionApplied] = useState(position);
+  const [ratings, setRatings] = useState<Record<RatingKey, number>>({
+    easyApplication: 0,
+    wellOrganized: 0,
+    timelyCommunication: 0,
+    supportiveRecruiter: 0,
+    feltRespected: 0,
+    fairInterview: 0,
+    clearUnderstanding: 0,
+    wouldApplyAgain: 0,
+    wouldRecommend: 0,
+  });
+  const [improvementSuggestion, setImprovementSuggestion] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
 
   const reset = () => {
-    setStep(0);
-    setCommunicationRating(0); setRecruiterRating(0); setTimeToHireRating(0);
-    setProcessRating(0); setInterviewExperienceRating(0); setFairnessRating(0);
-    setHighlights(''); setOverallRating(0); setNpsScore(-1);
-    setWouldRecommend(''); setApplyAgain(''); setImprovements(''); setFeedback('');
+    setPositionApplied(position);
+    setRatings({
+      easyApplication: 0, wellOrganized: 0, timelyCommunication: 0,
+      supportiveRecruiter: 0, feltRespected: 0, fairInterview: 0,
+      clearUnderstanding: 0, wouldApplyAgain: 0, wouldRecommend: 0,
+    });
+    setImprovementSuggestion('');
+    setContactEmail('');
   };
 
-  const step1Valid = communicationRating > 0 && recruiterRating > 0 && timeToHireRating > 0;
-  const step2Valid = processRating > 0 && interviewExperienceRating > 0 && fairnessRating > 0;
-  const step3Valid = overallRating > 0 && npsScore >= 0 && wouldRecommend !== '';
-
-  const canProceed = [step1Valid, step2Valid, step3Valid][step];
+  const allRated = Object.values(ratings).every((v) => v > 0);
+  const canSubmit = positionApplied.trim() !== '' && allRated;
 
   const handleSubmit = () => {
-    if (!step3Valid) return;
+    if (!canSubmit) return;
     onSubmit({
       applicationId,
       position,
       department,
       stage,
-      overallRating,
-      processRating,
-      communicationRating,
-      feedback,
-      wouldRecommend: wouldRecommend === 'yes',
       candidateName: 'Andi Prasetyo',
-      recruiterRating,
-      interviewExperienceRating,
-      fairnessRating,
-      timeToHireRating,
-      npsScore,
-      highlights,
-      improvements,
-      applyAgain: applyAgain === '' ? null : applyAgain === 'yes',
+      positionApplied,
+      ...ratings,
+      improvementSuggestion,
+      contactEmail,
     });
     reset();
     onOpenChange(false);
   };
 
-  const handleNext = () => {
-    if (step < STEPS.length - 1) setStep(step + 1);
-    else handleSubmit();
+  const setRating = (key: RatingKey, value: number) => {
+    setRatings((prev) => ({ ...prev, [key]: value }));
   };
-
-  const handleBack = () => {
-    if (step > 0) setStep(step - 1);
-    else { reset(); onOpenChange(false); }
-  };
-
-  const progress = ((step + 1) / STEPS.length) * 100;
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) { reset(); onOpenChange(false); } }}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Candidate Experience Survey</DialogTitle>
           <DialogDescription>
-            <span className="font-medium text-foreground">{position}</span>
-            {' '}· {stage === 'Hired' ? '🎉 Congratulations on your offer!' : 'Thank you for your time.'}
+            {stage === 'Hired' ? '🎉 Congratulations on your offer!' : 'Thank you for your time.'}
+            {' '}We value your feedback to improve our recruitment process.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Progress */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">{STEPS[step].title}</span>
-            <span>Step {step + 1} of {STEPS.length}</span>
+        <div className="space-y-6 py-2">
+          {/* Position Applied For */}
+          <div className="space-y-2">
+            <Label htmlFor="positionApplied" className="text-sm font-medium">Position Applied For *</Label>
+            <Input
+              id="positionApplied"
+              value={positionApplied}
+              onChange={(e) => setPositionApplied(e.target.value)}
+              placeholder="e.g. DevOps Engineer"
+            />
           </div>
-          <Progress value={progress} className="h-1.5" />
-          <p className="text-xs text-muted-foreground">{STEPS[step].subtitle}</p>
+
+          {/* Rating Questions */}
+          {QUESTIONS.map((q) => (
+            <ScaleSelector
+              key={q.key}
+              label={q.label}
+              value={ratings[q.key]}
+              onChange={(v) => setRating(q.key, v)}
+            />
+          ))}
+
+          {/* Improvement Suggestion */}
+          <div className="space-y-2">
+            <Label htmlFor="improvement" className="text-sm font-medium">
+              Is there anything we could do to make the experience even better?
+            </Label>
+            <Textarea
+              id="improvement"
+              placeholder="Your suggestions are greatly appreciated..."
+              value={improvementSuggestion}
+              onChange={(e) => setImprovementSuggestion(e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          {/* Contact Email */}
+          <div className="space-y-2">
+            <Label htmlFor="contactEmail" className="text-sm font-medium">
+              If you are open to being contacted to help us improve, please leave your email (optional).
+            </Label>
+            <Input
+              id="contactEmail"
+              type="email"
+              placeholder="your.email@example.com"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+            />
+          </div>
         </div>
 
-        {/* Step 1 – Recruiter & Process */}
-        {step === 0 && (
-          <div className="space-y-5 py-2">
-            <StarRating
-              label="Recruiter Responsiveness *"
-              description="How promptly did the recruiter communicate with you?"
-              value={recruiterRating}
-              onChange={setRecruiterRating}
-            />
-            <StarRating
-              label="Communication Quality *"
-              description="Were instructions, requirements, and next steps communicated clearly?"
-              value={communicationRating}
-              onChange={setCommunicationRating}
-            />
-            <StarRating
-              label="Speed of the Process *"
-              description="How satisfied are you with the overall timeline from application to decision?"
-              value={timeToHireRating}
-              onChange={setTimeToHireRating}
-            />
-          </div>
-        )}
-
-        {/* Step 2 – Interview Experience */}
-        {step === 1 && (
-          <div className="space-y-5 py-2">
-            <StarRating
-              label="Interview Structure *"
-              description="Were the interview stages well-organized and relevant to the role?"
-              value={processRating}
-              onChange={setProcessRating}
-            />
-            <StarRating
-              label="Interviewer Quality *"
-              description="How professional and prepared were the interviewers?"
-              value={interviewExperienceRating}
-              onChange={setInterviewExperienceRating}
-            />
-            <StarRating
-              label="Process Fairness & Transparency *"
-              description="Did you feel the process was fair and unbiased?"
-              value={fairnessRating}
-              onChange={setFairnessRating}
-            />
-            <div className="space-y-2">
-              <Label htmlFor="highlights" className="text-sm font-medium">What stood out positively?</Label>
-              <Textarea
-                id="highlights"
-                placeholder="e.g. The interviewers were very knowledgeable and welcoming..."
-                value={highlights}
-                onChange={(e) => setHighlights(e.target.value)}
-                rows={3}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Step 3 – Overall */}
-        {step === 2 && (
-          <div className="space-y-5 py-2">
-            <StarRating
-              label="Overall Experience *"
-              description="Your overall impression of the entire recruitment process"
-              value={overallRating}
-              onChange={setOverallRating}
-            />
-
-            <NPSSelector value={npsScore} onChange={setNpsScore} />
-
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Would you recommend others to apply here? *</Label>
-              <RadioGroup value={wouldRecommend} onValueChange={setWouldRecommend} className="flex gap-6">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="rec-yes" />
-                  <Label htmlFor="rec-yes" className="font-normal">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="rec-no" />
-                  <Label htmlFor="rec-no" className="font-normal">No</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Would you apply to Wowrack again in the future?</Label>
-              <RadioGroup value={applyAgain} onValueChange={setApplyAgain} className="flex gap-6">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="again-yes" />
-                  <Label htmlFor="again-yes" className="font-normal">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="again-no" />
-                  <Label htmlFor="again-no" className="font-normal">No</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="maybe" id="again-maybe" />
-                  <Label htmlFor="again-maybe" className="font-normal">Maybe</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="improvements" className="text-sm font-medium">What could we improve?</Label>
-              <Textarea
-                id="improvements"
-                placeholder="e.g. Clearer timeline updates, more structured interview questions..."
-                value={improvements}
-                onChange={(e) => setImprovements(e.target.value)}
-                rows={2}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="feedback" className="text-sm font-medium">Any additional comments?</Label>
-              <Textarea
-                id="feedback"
-                placeholder="Anything else you'd like to share..."
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                rows={2}
-              />
-            </div>
-          </div>
-        )}
-
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={handleBack} className="gap-1">
-            <ChevronLeft className="h-4 w-4" />
-            {step === 0 ? 'Cancel' : 'Back'}
+          <Button variant="outline" onClick={() => { reset(); onOpenChange(false); }}>
+            Cancel
           </Button>
-          <Button onClick={handleNext} disabled={!canProceed} className="gap-1">
-            {step < STEPS.length - 1 ? (
-              <>Next <ChevronRight className="h-4 w-4" /></>
-            ) : (
-              'Submit Survey'
-            )}
+          <Button onClick={handleSubmit} disabled={!canSubmit}>
+            Submit Survey
           </Button>
         </DialogFooter>
       </DialogContent>
