@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { 
   Search, 
-  Filter, 
   User, 
   Mail, 
   Phone, 
@@ -10,9 +9,12 @@ import {
   Star,
   Clock,
   ChevronRight,
-  X
+  MapPin,
+  GraduationCap,
+  Briefcase,
+  MessageCircle
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -33,6 +35,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { mockCandidates, Candidate } from '@/lib/mockHRData';
 import { usePipelineStages } from '@/lib/pipelineStageStore';
 
@@ -75,7 +78,6 @@ export default function HRCandidates() {
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -86,7 +88,6 @@ export default function HRCandidates() {
               />
             </div>
 
-            {/* Filter Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Select value={filterDepartment} onValueChange={setFilterDepartment}>
                 <SelectTrigger>
@@ -271,6 +272,10 @@ export default function HRCandidates() {
                       <Phone className="h-4 w-4 text-muted-foreground" />
                       <span>{selectedCandidate.phone}</span>
                     </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                      <span>WhatsApp: {selectedCandidate.whatsapp}</span>
+                    </div>
                     {selectedCandidate.linkedIn && (
                       <div className="flex items-center gap-2 text-sm">
                         <Linkedin className="h-4 w-4 text-muted-foreground" />
@@ -281,6 +286,19 @@ export default function HRCandidates() {
                     )}
                   </div>
                 </div>
+
+                <Separator />
+
+                {/* Domicile */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold">Domicile</h4>
+                  <div className="flex items-center gap-2 text-sm">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span>{selectedCandidate.city}, {selectedCandidate.province}</span>
+                  </div>
+                </div>
+
+                <Separator />
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-4">
@@ -300,6 +318,44 @@ export default function HRCandidates() {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Education */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold flex items-center gap-2">
+                    <GraduationCap className="h-4 w-4" />
+                    Education
+                  </h4>
+                  {selectedCandidate.educationType === 'university' ? (
+                    <div className="text-sm space-y-1">
+                      <p className="font-medium">{selectedCandidate.universityName}</p>
+                      <p className="text-muted-foreground">Level: {selectedCandidate.universityLevel}</p>
+                    </div>
+                  ) : (
+                    <div className="text-sm">
+                      <p className="font-medium">{selectedCandidate.highSchoolName}</p>
+                      <p className="text-muted-foreground">SMA/SMK</p>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Last Work Experience */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold flex items-center gap-2">
+                    <Briefcase className="h-4 w-4" />
+                    Last Work Experience
+                  </h4>
+                  <div className="text-sm space-y-1">
+                    <p className="font-medium">{selectedCandidate.lastRole}</p>
+                    <p className="text-muted-foreground">{selectedCandidate.lastCompany}</p>
+                    <p className="text-muted-foreground">
+                      {selectedCandidate.lastWorkFrom} — {selectedCandidate.lastWorkTo}
+                    </p>
+                  </div>
+                </div>
+
+                <Separator />
 
                 {/* Skills */}
                 <div className="space-y-3">
