@@ -78,12 +78,68 @@ export default function HRSurveys() {
     ? (surveys.reduce((sum, s) => sum + (s.wouldRecommend || 0), 0) / surveys.length).toFixed(1)
     : '0';
 
+  // NPS Calculation based on wouldRecommend score
+  const npsData = useMemo(() => {
+    if (surveys.length === 0) return { promoters: 0, passives: 0, detractors: 0, pctPromoter: 0, pctPassive: 0, pctDetractor: 0, nps: 0 };
+    let promoters = 0, passives = 0, detractors = 0;
+    surveys.forEach((s) => {
+      const score = s.wouldRecommend || 0;
+      if (score >= 9) promoters++;
+      else if (score >= 7) passives++;
+      else detractors++;
+    });
+    const total = surveys.length;
+    const pctPromoter = Math.round((promoters / total) * 100);
+    const pctPassive = Math.round((passives / total) * 100);
+    const pctDetractor = Math.round((detractors / total) * 100);
+    const nps = pctPromoter - pctDetractor;
+    return { promoters, passives, detractors, pctPromoter, pctPassive, pctDetractor, nps };
+  }, [surveys]);
+
+  // Anonymize candidate name
+  const anonymize = (name: string) => {
+    const parts = name.split(' ');
+    return parts.map((p) => p[0] + '***').join(' ');
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl lg:text-3xl font-bold">Candidate Surveys</h1>
         <p className="text-muted-foreground mt-1">Review feedback from hired and rejected candidates</p>
       </div>
+
+      {/* NPS Section */}
+      <Card>
+        <CardContent className="p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold">Candidate NPS</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div className="text-center p-3 rounded-lg bg-muted/50">
+              <p className="text-2xl font-bold">{surveys.length}</p>
+              <p className="text-xs text-muted-foreground">Total Respondents</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-green-500/10">
+              <p className="text-2xl font-bold text-green-600">{npsData.pctPromoter}%</p>
+              <p className="text-xs text-muted-foreground">Promoters (9–10)</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-yellow-500/10">
+              <p className="text-2xl font-bold text-yellow-600">{npsData.pctPassive}%</p>
+              <p className="text-xs text-muted-foreground">Passives (7–8)</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-red-500/10">
+              <p className="text-2xl font-bold text-red-600">{npsData.pctDetractor}%</p>
+              <p className="text-xs text-muted-foreground">Detractors (1–6)</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-primary/10">
+              <p className={`text-3xl font-bold ${npsData.nps >= 0 ? 'text-green-600' : 'text-red-600'}`}>{npsData.nps}</p>
+              <p className="text-xs text-muted-foreground">NPS Score</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -159,7 +215,7 @@ export default function HRSurveys() {
                 const avg = (ratingKeys.reduce((sum, k) => sum + ((s as any)[k] as number || 0), 0) / ratingKeys.length).toFixed(1);
                 return (
                   <TableRow key={s.id}>
-                    <TableCell className="font-medium">{s.candidateName}</TableCell>
+                    <TableCell className="font-medium">{anonymize(s.candidateName)}</TableCell>
                     <TableCell>
                       <div>
                         <p className="text-sm">{s.positionApplied || s.position}</p>
@@ -200,7 +256,7 @@ export default function HRSurveys() {
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Survey Response</DialogTitle>
-            <DialogDescription>{selected?.candidateName} — {selected?.positionApplied || selected?.position}</DialogDescription>
+            <DialogDescription>{selected ? anonymize(selected.candidateName) : ''} — {selected?.positionApplied || selected?.position}</DialogDescription>
           </DialogHeader>
           {selected && (
             <div className="space-y-4 py-2">
