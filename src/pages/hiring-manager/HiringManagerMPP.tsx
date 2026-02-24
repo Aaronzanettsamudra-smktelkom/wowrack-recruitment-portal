@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Send } from "lucide-react";
-import { locations } from "@/lib/mockData";
 
 interface MPPFormData {
   title: string;
@@ -26,7 +25,10 @@ interface MPPFormData {
   budgeted: 'budgeted' | 'not_budgeted';
   recruitmentStatus: 'new' | 'replacement' | 'expansion';
   specialNeeds: string;
-  location: string;
+  provinceId: string;
+  provinceName: string;
+  regencyId: string;
+  regencyName: string;
 }
 
 const initialFormData: MPPFormData = {
@@ -45,13 +47,36 @@ const initialFormData: MPPFormData = {
   budgeted: 'budgeted',
   recruitmentStatus: 'new',
   specialNeeds: '',
-  location: '',
+  provinceId: '',
+  provinceName: '',
+  regencyId: '',
+  regencyName: '',
 };
 
 export default function HiringManagerMPP() {
   const [formData, setFormData] = useState<MPPFormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [provinces, setProvinces] = useState<{ id: string; name: string }[]>([]);
+  const [regencies, setRegencies] = useState<{ id: string; name: string }[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+      .then((res) => res.json())
+      .then((data) => setProvinces(data))
+      .catch(() => toast({ title: "Error", description: "Failed to load provinces", variant: "destructive" }));
+  }, []);
+
+  useEffect(() => {
+    if (formData.provinceId) {
+      setRegencies([]);
+      setFormData((prev) => ({ ...prev, regencyId: '', regencyName: '' }));
+      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${formData.provinceId}.json`)
+        .then((res) => res.json())
+        .then((data) => setRegencies(data))
+        .catch(() => toast({ title: "Error", description: "Failed to load cities", variant: "destructive" }));
+    }
+  }, [formData.provinceId]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -77,7 +102,7 @@ export default function HiringManagerMPP() {
     
     if (!formData.title || !formData.aboutRole || !formData.responsibilities || 
         !formData.requirements || !formData.benefits || !formData.justification ||
-        !formData.dateNeeded || !formData.reportTo || !formData.location) {
+        !formData.dateNeeded || !formData.reportTo || !formData.provinceId || !formData.regencyId) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -141,14 +166,41 @@ export default function HiringManagerMPP() {
             </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location *</Label>
-                <Select value={formData.location} onValueChange={(value) => setFormData((prev) => ({ ...prev, location: value }))}>
+                <Label>Province *</Label>
+                <Select
+                  value={formData.provinceId}
+                  onValueChange={(value) => {
+                    const prov = provinces.find((p) => p.id === value);
+                    setFormData((prev) => ({ ...prev, provinceId: value, provinceName: prov?.name || '' }));
+                  }}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select location" />
+                    <SelectValue placeholder="Select province" />
                   </SelectTrigger>
                   <SelectContent>
-                    {locations.map((loc) => (
-                      <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                    {provinces.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>City / Regency *</Label>
+                <Select
+                  value={formData.regencyId}
+                  onValueChange={(value) => {
+                    const reg = regencies.find((r) => r.id === value);
+                    setFormData((prev) => ({ ...prev, regencyId: value, regencyName: reg?.name || '' }));
+                  }}
+                  disabled={!formData.provinceId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={formData.provinceId ? "Select city" : "Select province first"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regencies.map((r) => (
+                      <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
