@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Send } from "lucide-react";
+import { locations } from "@/lib/mockData";
 
 interface MPPFormData {
   title: string;
@@ -25,6 +26,7 @@ interface MPPFormData {
   budgeted: 'budgeted' | 'not_budgeted';
   recruitmentStatus: 'new' | 'replacement' | 'expansion';
   specialNeeds: string;
+  location: string;
 }
 
 const initialFormData: MPPFormData = {
@@ -43,6 +45,7 @@ const initialFormData: MPPFormData = {
   budgeted: 'budgeted',
   recruitmentStatus: 'new',
   specialNeeds: '',
+  location: '',
 };
 
 export default function HiringManagerMPP() {
@@ -74,7 +77,7 @@ export default function HiringManagerMPP() {
     
     if (!formData.title || !formData.aboutRole || !formData.responsibilities || 
         !formData.requirements || !formData.benefits || !formData.justification ||
-        !formData.dateNeeded || !formData.reportTo) {
+        !formData.dateNeeded || !formData.reportTo || !formData.location) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -136,6 +139,20 @@ export default function HiringManagerMPP() {
                   placeholder="e.g., Senior Software Engineer"
                 />
             </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location">Location *</Label>
+                <Select value={formData.location} onValueChange={(value) => setFormData((prev) => ({ ...prev, location: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locations.map((loc) => (
+                      <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">

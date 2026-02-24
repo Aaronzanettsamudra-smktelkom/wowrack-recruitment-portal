@@ -158,24 +158,28 @@ export default function HRRequisitions() {
                     {getStatusBadge(request.status)}
                     <div className={`h-2 w-2 rounded-full ${getPriorityColor(request.priority)}`} title={`${request.priority} priority`} />
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Department</p>
-                      <p className="font-medium">{request.department}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Department</p>
+                        <p className="font-medium">{request.department}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Location</p>
+                        <p className="font-medium">{request.location}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Requested By</p>
+                        <p className="font-medium">{request.requestedBy}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Quantity</p>
+                        <p className="font-medium">{request.quantity} position(s)</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Salary Range</p>
+                        <p className="font-medium">{formatCurrency(request.salaryMin)} - {formatCurrency(request.salaryMax)}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Requested By</p>
-                      <p className="font-medium">{request.requestedBy}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Quantity</p>
-                      <p className="font-medium">{request.quantity} position(s)</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Salary Range</p>
-                      <p className="font-medium">{formatCurrency(request.salaryMin)} - {formatCurrency(request.salaryMax)}</p>
-                    </div>
-                  </div>
                   <div className="mt-3">
                     <p className="text-sm text-muted-foreground">Date Posted: {request.datePosted}</p>
                   </div>
@@ -250,7 +254,7 @@ export default function HRRequisitions() {
           <DialogHeader>
             <DialogTitle className="text-xl">{detailRequest?.title}</DialogTitle>
             <DialogDescription>
-              {detailRequest?.department} • Posted on {detailRequest?.datePosted}
+              {detailRequest?.department} • {detailRequest?.location} • Posted on {detailRequest?.datePosted}
             </DialogDescription>
           </DialogHeader>
           
@@ -321,6 +325,10 @@ export default function HRRequisitions() {
                   <div>
                     <h4 className="text-sm font-semibold text-foreground mb-1">Recruitment Status</h4>
                     <p className="text-sm text-muted-foreground capitalize">{detailRequest.recruitmentStatus || '-'}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Location</h4>
+                    <p className="text-sm text-muted-foreground">{detailRequest.location || '-'}</p>
                   </div>
                 </div>
 
