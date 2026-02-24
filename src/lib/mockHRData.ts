@@ -21,6 +21,7 @@ export interface MPPRequest {
   budgeted: 'budgeted' | 'not_budgeted';
   recruitmentStatus: 'new' | 'replacement' | 'expansion';
   specialNeeds?: string;
+  location: string;
 }
 
 export interface Candidate {
@@ -122,6 +123,7 @@ export const mockMPPRequests: MPPRequest[] = [
     budgeted: 'budgeted',
     recruitmentStatus: 'expansion',
     specialNeeds: 'Must be comfortable with on-call rotation',
+    location: 'Jakarta Selatan',
   },
   {
     id: 'mpp-2',
@@ -144,6 +146,7 @@ export const mockMPPRequests: MPPRequest[] = [
     reportTo: 'Marketing Director',
     budgeted: 'budgeted',
     recruitmentStatus: 'replacement',
+    location: 'Bandung',
   },
   {
     id: 'mpp-3',
@@ -167,6 +170,7 @@ export const mockMPPRequests: MPPRequest[] = [
     budgeted: 'not_budgeted',
     recruitmentStatus: 'new',
     specialNeeds: 'Experience with healthcare data preferred',
+    location: 'Surabaya',
   },
   {
     id: 'mpp-4',
@@ -189,6 +193,7 @@ export const mockMPPRequests: MPPRequest[] = [
     reportTo: 'Head of Design',
     budgeted: 'budgeted',
     recruitmentStatus: 'expansion',
+    location: 'Remote',
   },
 ];
 
