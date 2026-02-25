@@ -39,6 +39,7 @@ import { useToast } from '@/hooks/use-toast';
 import { mockCandidates, Candidate, PipelineStage } from '@/lib/mockHRData';
 import { usePipelineStages } from '@/lib/pipelineStageStore';
 import StageEditorDialog from '@/components/hr/StageEditorDialog';
+import RejectionEmailDialog from '@/components/hr/RejectionEmailDialog';
 
 interface JobOpening {
   position: string;
@@ -54,6 +55,7 @@ export default function HRPipeline() {
   const [sourceFilter, setSourceFilter] = useState<string>('all');
   const [scoreFilter, setScoreFilter] = useState<string>('all');
   const [stageEditorOpen, setStageEditorOpen] = useState(false);
+  const [emailCandidate, setEmailCandidate] = useState<Candidate | null>(null);
   const { toast } = useToast();
   const pipelineStages = usePipelineStages();
 
@@ -341,9 +343,9 @@ export default function HRPipeline() {
                                         Move to {pipelineStages.find(s => s.key === getNextStage(candidate.stage))?.label}
                                       </DropdownMenuItem>
                                     )}
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setEmailCandidate(candidate)}>
                                       <Mail className="h-4 w-4 mr-2" />
-                                      Send Email
+                                      Send Rejection Email
                                     </DropdownMenuItem>
                                     {candidate.stage !== 'rejected' && candidate.stage !== 'hired' && (
                                       <DropdownMenuItem 
@@ -429,6 +431,22 @@ export default function HRPipeline() {
         currentStages={pipelineStages}
         candidateCountByStage={candidateCountByStage}
         onStagesSaved={handleStagesSaved}
+      />
+
+      <RejectionEmailDialog
+        open={!!emailCandidate}
+        onOpenChange={(open) => { if (!open) setEmailCandidate(null); }}
+        candidate={emailCandidate}
+        onSend={() => {
+          toast({
+            title: 'Rejection Email Sent',
+            description: `Rejection email sent to ${emailCandidate?.name}`,
+          });
+          if (emailCandidate) {
+            moveCandidate(emailCandidate.id, 'rejected');
+          }
+          setEmailCandidate(null);
+        }}
       />
     </div>
   );
