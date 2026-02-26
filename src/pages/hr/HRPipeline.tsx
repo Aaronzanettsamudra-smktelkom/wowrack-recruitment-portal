@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   User, 
   GripVertical,
@@ -43,7 +43,7 @@ import { mockCandidates, Candidate, PipelineStage } from '@/lib/mockHRData';
 import { usePipelineStages } from '@/lib/pipelineStageStore';
 import StageEditorDialog from '@/components/hr/StageEditorDialog';
 import RejectionEmailDialog from '@/components/hr/RejectionEmailDialog';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface JobOpening {
   position: string;
@@ -53,6 +53,7 @@ interface JobOpening {
 
 export default function HRPipeline() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates);
   const [rejectCandidate, setRejectCandidate] = useState<Candidate | null>(null);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
@@ -63,6 +64,16 @@ export default function HRPipeline() {
   const [emailCandidate, setEmailCandidate] = useState<Candidate | null>(null);
   const { toast } = useToast();
   const pipelineStages = usePipelineStages();
+
+  // Auto-select job from URL param
+  useEffect(() => {
+    const jobParam = searchParams.get('job');
+    if (jobParam) {
+      setSelectedJob(jobParam);
+      searchParams.delete('job');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Derive unique job openings from candidates
   const jobOpenings = useMemo<JobOpening[]>(() => {
