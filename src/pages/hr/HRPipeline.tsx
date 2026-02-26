@@ -92,7 +92,7 @@ export default function HRPipeline() {
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
           // Remove highlight after animation
-          setTimeout(() => setHighlightedCandidateId(null), 2500);
+          setTimeout(() => setHighlightedCandidateId(null), 1500);
         }
       }, 300);
       return () => clearTimeout(timer);
