@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   User, 
   GripVertical,
@@ -62,19 +62,42 @@ export default function HRPipeline() {
   const [universityFilter, setUniversityFilter] = useState<string>('all');
   const [lastRoleFilter, setLastRoleFilter] = useState<string>('all');
   const [stageEditorOpen, setStageEditorOpen] = useState(false);
+  const [highlightedCandidateId, setHighlightedCandidateId] = useState<string | null>(null);
   const [emailCandidate, setEmailCandidate] = useState<Candidate | null>(null);
   const { toast } = useToast();
   const pipelineStages = usePipelineStages();
 
-  // Auto-select job from URL param
+  // Auto-select job and candidate from URL params
   useEffect(() => {
     const jobParam = searchParams.get('job');
+    const candidateParam = searchParams.get('candidate');
     if (jobParam) {
       setSelectedJob(jobParam);
+    }
+    if (candidateParam) {
+      setHighlightedCandidateId(candidateParam);
+    }
+    if (jobParam || candidateParam) {
       searchParams.delete('job');
+      searchParams.delete('candidate');
       setSearchParams(searchParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
+
+  // Scroll to and highlight candidate after render
+  useEffect(() => {
+    if (highlightedCandidateId && selectedJob) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`candidate-card-${highlightedCandidateId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+          // Remove highlight after animation
+          setTimeout(() => setHighlightedCandidateId(null), 2500);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [highlightedCandidateId, selectedJob]);
 
   // Derive unique job openings from candidates
   const jobOpenings = useMemo<JobOpening[]>(() => {
@@ -369,8 +392,13 @@ export default function HRPipeline() {
                     <div className="space-y-3">
                         {stageCandidates.map((candidate) => (
                           <Card 
-                            key={candidate.id} 
-                            className="cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow"
+                            key={candidate.id}
+                            id={`candidate-card-${candidate.id}`}
+                            className={`cursor-grab active:cursor-grabbing hover:shadow-md transition-all duration-500 ${
+                              highlightedCandidateId === candidate.id
+                                ? 'ring-2 ring-primary shadow-lg scale-[1.02] bg-primary/5'
+                                : ''
+                            }`}
                           >
                             <CardContent className="p-4">
                               <div className="flex items-start justify-between mb-2">
