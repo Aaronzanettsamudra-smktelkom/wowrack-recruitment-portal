@@ -11,7 +11,10 @@ import {
   Filter,
   Search,
   X,
-  Settings2
+  Settings2,
+  GraduationCap,
+  Building2,
+  ExternalLink
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -40,6 +43,7 @@ import { mockCandidates, Candidate, PipelineStage } from '@/lib/mockHRData';
 import { usePipelineStages } from '@/lib/pipelineStageStore';
 import StageEditorDialog from '@/components/hr/StageEditorDialog';
 import RejectionEmailDialog from '@/components/hr/RejectionEmailDialog';
+import { useNavigate } from 'react-router-dom';
 
 interface JobOpening {
   position: string;
@@ -48,6 +52,7 @@ interface JobOpening {
 }
 
 export default function HRPipeline() {
+  const navigate = useNavigate();
   const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates);
   const [rejectCandidate, setRejectCandidate] = useState<Candidate | null>(null);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
@@ -359,7 +364,7 @@ export default function HRPipeline() {
                                 </DropdownMenu>
                               </div>
 
-                              <div className="ml-6">
+                              <div className="ml-6 space-y-1.5">
                                 <p className="font-medium text-sm">{candidate.name}</p>
                                 <p className="text-xs text-muted-foreground">{candidate.source}</p>
                                 
@@ -373,7 +378,27 @@ export default function HRPipeline() {
                                   </span>
                                 </div>
 
-                                <div className="flex flex-wrap gap-1 mt-2">
+                                {/* Last Position & Company */}
+                                {candidate.lastRole && (
+                                  <div className="flex items-start gap-1.5 mt-1.5">
+                                    <Building2 className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                                    <span className="text-xs text-muted-foreground leading-tight">
+                                      {candidate.lastRole} at {candidate.lastCompany}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {/* Education */}
+                                <div className="flex items-start gap-1.5">
+                                  <GraduationCap className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                                  <span className="text-xs text-muted-foreground leading-tight">
+                                    {candidate.educationType === 'university'
+                                      ? `${candidate.universityLevel || ''} — ${candidate.universityName || 'University'}`
+                                      : candidate.highSchoolName || 'High School'}
+                                  </span>
+                                </div>
+
+                                <div className="flex flex-wrap gap-1 mt-1.5">
                                   {candidate.skills.slice(0, 2).map((skill) => (
                                     <Badge key={skill} variant="outline" className="text-[10px] px-1.5 py-0">
                                       {skill}
@@ -381,9 +406,23 @@ export default function HRPipeline() {
                                   ))}
                                 </div>
 
-                                <p className="text-[10px] text-muted-foreground mt-2">
-                                  Applied: {candidate.appliedDate}
-                                </p>
+                                <div className="flex items-center justify-between mt-2">
+                                  <p className="text-[10px] text-muted-foreground">
+                                    Applied: {candidate.appliedDate}
+                                  </p>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-5 w-5 text-muted-foreground hover:text-primary"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate('/hr/candidates');
+                                    }}
+                                    title="View candidate details"
+                                  >
+                                    <ExternalLink className="h-3 w-3" />
+                                  </Button>
+                                </div>
                               </div>
                             </CardContent>
                           </Card>
