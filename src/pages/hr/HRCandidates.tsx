@@ -426,7 +426,7 @@ export default function HRCandidates() {
                   <Button
                     className="flex-1"
                     variant="outline"
-                    onClick={() => navigate(`/hr/pipeline?job=${encodeURIComponent(selectedCandidate.position)}`)}
+                    onClick={() => navigate(`/hr/pipeline?job=${encodeURIComponent(selectedCandidate.position)}&candidate=${selectedCandidate.id}`)}
                   >
                     View in Pipeline
                   </Button>
