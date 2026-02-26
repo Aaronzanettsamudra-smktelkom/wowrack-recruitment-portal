@@ -20,7 +20,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   DropdownMenu,
@@ -60,6 +59,8 @@ export default function HRPipeline() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
   const [scoreFilter, setScoreFilter] = useState<string>('all');
+  const [universityFilter, setUniversityFilter] = useState<string>('all');
+  const [lastRoleFilter, setLastRoleFilter] = useState<string>('all');
   const [stageEditorOpen, setStageEditorOpen] = useState(false);
   const [emailCandidate, setEmailCandidate] = useState<Candidate | null>(null);
   const { toast } = useToast();
@@ -93,6 +94,18 @@ export default function HRPipeline() {
     return Array.from(s);
   }, [candidates]);
 
+  // Unique universities for filter
+  const universities = useMemo(() => {
+    const u = new Set(candidates.filter(c => c.universityName).map(c => c.universityName!));
+    return Array.from(u).sort();
+  }, [candidates]);
+
+  // Unique last roles for filter
+  const lastRoles = useMemo(() => {
+    const r = new Set(candidates.map(c => c.lastRole));
+    return Array.from(r).sort();
+  }, [candidates]);
+
   // Filtered candidates
   const filteredCandidates = useMemo(() => {
     if (!selectedJob) return [];
@@ -111,8 +124,14 @@ export default function HRPipeline() {
     } else if (scoreFilter === 'low') {
       result = result.filter((c) => c.aiScore < 70);
     }
+    if (universityFilter !== 'all') {
+      result = result.filter((c) => c.universityName === universityFilter);
+    }
+    if (lastRoleFilter !== 'all') {
+      result = result.filter((c) => c.lastRole === lastRoleFilter);
+    }
     return result;
-  }, [selectedJob, candidates, searchQuery, sourceFilter, scoreFilter]);
+  }, [selectedJob, candidates, searchQuery, sourceFilter, scoreFilter, universityFilter, lastRoleFilter]);
 
   const candidateCountByStage = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -192,9 +211,11 @@ export default function HRPipeline() {
     setSearchQuery('');
     setSourceFilter('all');
     setScoreFilter('all');
+    setUniversityFilter('all');
+    setLastRoleFilter('all');
   };
 
-  const hasActiveFilters = searchQuery || sourceFilter !== 'all' || scoreFilter !== 'all';
+  const hasActiveFilters = searchQuery || sourceFilter !== 'all' || scoreFilter !== 'all' || universityFilter !== 'all' || lastRoleFilter !== 'all';
 
   // Job selection view
   if (!selectedJob) {
@@ -294,6 +315,28 @@ export default function HRPipeline() {
                   <SelectItem value="low">Low (&lt;70)</SelectItem>
                 </SelectContent>
               </Select>
+              <Select value={universityFilter} onValueChange={setUniversityFilter}>
+                <SelectTrigger className="w-full sm:w-48 h-9">
+                  <SelectValue placeholder="University" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Universities</SelectItem>
+                  {universities.map((u) => (
+                    <SelectItem key={u} value={u}>{u}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={lastRoleFilter} onValueChange={setLastRoleFilter}>
+                <SelectTrigger className="w-full sm:w-48 h-9">
+                  <SelectValue placeholder="Previous Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  {lastRoles.map((r) => (
+                    <SelectItem key={r} value={r}>{r}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {hasActiveFilters && (
                 <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9">
                   <X className="h-4 w-4 mr-1" />
@@ -306,13 +349,13 @@ export default function HRPipeline() {
       </Card>
 
       {/* Kanban Board */}
-      <ScrollArea className="w-full pb-4">
+      <div className="w-full overflow-x-auto pb-4">
         <div className="flex gap-4 min-w-max">
           {pipelineStages.map((stage) => {
             const stageCandidates = getCandidatesByStage(stage.key);
             return (
               <div key={stage.key} className="w-80 flex-shrink-0">
-                <Card className="h-full">
+                <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -323,8 +366,7 @@ export default function HRPipeline() {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <ScrollArea className="h-[calc(100vh-380px)]">
-                      <div className="space-y-3 pr-4">
+                    <div className="space-y-3">
                         {stageCandidates.map((candidate) => (
                           <Card 
                             key={candidate.id} 
@@ -447,15 +489,13 @@ export default function HRPipeline() {
                           </div>
                         )}
                       </div>
-                    </ScrollArea>
                   </CardContent>
                 </Card>
               </div>
             );
           })}
         </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      </div>
 
       {/* Rejection Confirmation Dialog */}
       <AlertDialog open={!!rejectCandidate} onOpenChange={() => setRejectCandidate(null)}>
