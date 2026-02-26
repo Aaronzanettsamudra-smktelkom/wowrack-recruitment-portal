@@ -43,6 +43,14 @@ export function addCustomBenefit(label: string): BenefitOption {
   return benefit;
 }
 
+export function removeCustomBenefit(id: string): void {
+  customBenefits = customBenefits.filter((b) => b.id !== id);
+}
+
+export function isCustomBenefit(id: string): boolean {
+  return customBenefits.some((b) => b.id === id);
+}
+
 export function getCustomBenefits(): BenefitOption[] {
   return [...customBenefits];
 }
