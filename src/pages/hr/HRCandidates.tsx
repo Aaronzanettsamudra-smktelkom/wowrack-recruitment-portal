@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   Search, 
   User, 
@@ -42,6 +42,7 @@ import { usePipelineStages } from '@/lib/pipelineStageStore';
 
 export default function HRCandidates() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const pipelineStages = usePipelineStages();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDepartment, setFilterDepartment] = useState<string>('all');
@@ -422,8 +423,19 @@ export default function HRCandidates() {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-4 border-t">
-                  <Button className="flex-1">Move to Next Stage</Button>
-                  <Button variant="outline">Schedule Interview</Button>
+                  <Button
+                    className="flex-1"
+                    variant="outline"
+                    onClick={() => navigate(`/hr/pipeline?job=${encodeURIComponent(selectedCandidate.position)}`)}
+                  >
+                    View in Pipeline
+                  </Button>
+                  <Button
+                    className="flex-1"
+                    onClick={() => navigate(`/hr/interviews?candidate=${selectedCandidate.id}`)}
+                  >
+                    Schedule Interview
+                  </Button>
                 </div>
               </div>
             </>

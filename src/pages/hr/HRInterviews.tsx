@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
@@ -41,6 +42,7 @@ import {
 } from '@/lib/mockHRData';
 
 export default function HRInterviews() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [interviews, setInterviews] = useState<Interview[]>(mockInterviews);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
@@ -53,6 +55,20 @@ export default function HRInterviews() {
     interviewers: ''
   });
   const { toast } = useToast();
+
+  // Auto-open schedule dialog with pre-filled candidate from URL
+  useEffect(() => {
+    const candidateId = searchParams.get('candidate');
+    if (candidateId) {
+      const candidate = mockCandidates.find(c => c.id === candidateId);
+      if (candidate) {
+        setNewInterview(prev => ({ ...prev, candidateId }));
+        setShowScheduleDialog(true);
+      }
+      searchParams.delete('candidate');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const upcomingInterviews = interviews.filter(i => i.status === 'scheduled');
   const completedInterviews = interviews.filter(i => i.status === 'completed');
