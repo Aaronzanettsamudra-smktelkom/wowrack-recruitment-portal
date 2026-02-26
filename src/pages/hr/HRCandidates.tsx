@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Search, 
   User, 
@@ -40,6 +41,7 @@ import { mockCandidates, Candidate } from '@/lib/mockHRData';
 import { usePipelineStages } from '@/lib/pipelineStageStore';
 
 export default function HRCandidates() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const pipelineStages = usePipelineStages();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDepartment, setFilterDepartment] = useState<string>('all');
@@ -47,6 +49,19 @@ export default function HRCandidates() {
   const [minAiScore, setMinAiScore] = useState<number>(0);
   const [minExperience, setMinExperience] = useState<number>(0);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+
+  // Auto-open candidate detail from URL param
+  useEffect(() => {
+    const openId = searchParams.get('open');
+    if (openId) {
+      const candidate = mockCandidates.find(c => c.id === openId);
+      if (candidate) {
+        setSelectedCandidate(candidate);
+      }
+      searchParams.delete('open');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const departments = [...new Set(mockCandidates.map(c => c.department))];
 

@@ -411,16 +411,17 @@ export default function HRPipeline() {
                                     Applied: {candidate.appliedDate}
                                   </p>
                                   <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-5 w-5 text-muted-foreground hover:text-primary"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-7 px-2 text-xs gap-1"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      navigate('/hr/candidates');
+                                      navigate(`/hr/candidates?open=${candidate.id}`);
                                     }}
                                     title="View candidate details"
                                   >
-                                    <ExternalLink className="h-3 w-3" />
+                                    <ExternalLink className="h-3.5 w-3.5" />
+                                    Detail
                                   </Button>
                                 </div>
                               </div>
