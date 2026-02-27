@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
-import { Briefcase, MapPin, DollarSign, Search, Filter, CalendarDays, Eye, Pencil, Plus } from 'lucide-react';
+import { Briefcase, MapPin, Search, Filter, CalendarDays, Eye, Pencil, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import BenefitsSelector from '@/components/hiring-manager/BenefitsSelector';
 import { getAllBenefits } from '@/lib/benefitsStore';
@@ -253,8 +253,7 @@ export default function HRJobOpenings() {
                         <MapPin className="h-3.5 w-3.5" />
                         {job.location}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <DollarSign className="h-3.5 w-3.5" />
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground">
                         {job.salary}
                       </span>
                       <span className="flex items-center gap-1">
