@@ -8,14 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Send } from "lucide-react";
-import BenefitsSelector from "@/components/hiring-manager/BenefitsSelector";
+
 
 interface MPPFormData {
   title: string;
   aboutRole: string;
   responsibilities: string;
   requirements: string;
-  benefits: string[];
+  
   salaryMin: number;
   salaryMax: number;
   quantity: number;
@@ -37,7 +37,7 @@ const initialFormData: MPPFormData = {
   aboutRole: '',
   responsibilities: '',
   requirements: '',
-  benefits: [],
+  
   salaryMin: 0,
   salaryMax: 0,
   quantity: 1,
@@ -102,7 +102,7 @@ export default function HiringManagerMPP() {
     e.preventDefault();
     
     if (!formData.title || !formData.aboutRole || !formData.responsibilities || 
-        !formData.requirements || formData.benefits.length === 0 || !formData.justification ||
+        !formData.requirements || !formData.justification ||
         !formData.dateNeeded || !formData.reportTo || !formData.provinceId || !formData.regencyId) {
       toast({
         title: "Validation Error",
@@ -329,10 +329,6 @@ export default function HiringManagerMPP() {
               />
             </div>
 
-            <BenefitsSelector
-              selectedBenefits={formData.benefits}
-              onBenefitsChange={(benefits) => setFormData((prev) => ({ ...prev, benefits }))}
-            />
 
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
