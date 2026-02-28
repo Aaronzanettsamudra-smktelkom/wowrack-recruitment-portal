@@ -19,14 +19,15 @@ interface SurveyDialogProps {
   onSubmit: (data: Record<string, any>) => void;
 }
 
-function ScaleSelector({ value, onChange, label }: {
+function ScaleSelector({ value, onChange, label, required }: {
   value: number;
   onChange: (v: number) => void;
   label: string;
+  required: boolean;
 }) {
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium leading-snug">{label} <span className="text-destructive">*</span></Label>
+      <Label className="text-sm font-medium leading-snug">{label} {required && <span className="text-destructive">*</span>}</Label>
       <div className="flex items-center gap-1">
         <span className="text-[10px] text-muted-foreground w-16 text-right pr-2 shrink-0">Not Agree</span>
         <div className="flex gap-1 flex-1 justify-center">
@@ -58,18 +59,23 @@ export default function SurveyDialog({
   const questions = useSurveyQuestions();
   const [positionApplied, setPositionApplied] = useState(position);
   const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [textAnswers, setTextAnswers] = useState<Record<string, string>>({});
   const [improvementSuggestion, setImprovementSuggestion] = useState('');
   const [contactEmail, setContactEmail] = useState('');
 
   const reset = () => {
     setPositionApplied(position);
     setRatings({});
+    setTextAnswers({});
     setImprovementSuggestion('');
     setContactEmail('');
   };
 
-  const allRated = questions.every((q) => (ratings[q.key] || 0) > 0);
-  const canSubmit = positionApplied.trim() !== '' && allRated;
+  const canSubmit = positionApplied.trim() !== '' && questions.every((q) => {
+    if (!q.required) return true;
+    if (q.type === 'rating') return (ratings[q.key] || 0) > 0;
+    return (textAnswers[q.key] || '').trim() !== '';
+  });
 
   const handleSubmit = () => {
     if (!canSubmit) return;
@@ -81,6 +87,7 @@ export default function SurveyDialog({
       candidateName: 'Andi Prasetyo',
       positionApplied,
       ...ratings,
+      ...textAnswers,
       improvementSuggestion,
       contactEmail,
     });
@@ -90,6 +97,10 @@ export default function SurveyDialog({
 
   const setRating = (key: string, value: number) => {
     setRatings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const setTextAnswer = (key: string, value: string) => {
+    setTextAnswers((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -115,14 +126,29 @@ export default function SurveyDialog({
             />
           </div>
 
-          {/* Dynamic Rating Questions */}
+          {/* Dynamic Questions */}
           {questions.map((q) => (
-            <ScaleSelector
-              key={q.key}
-              label={q.label}
-              value={ratings[q.key] || 0}
-              onChange={(v) => setRating(q.key, v)}
-            />
+            q.type === 'rating' ? (
+              <ScaleSelector
+                key={q.key}
+                label={q.label}
+                value={ratings[q.key] || 0}
+                onChange={(v) => setRating(q.key, v)}
+                required={q.required}
+              />
+            ) : (
+              <div key={q.key} className="space-y-2">
+                <Label className="text-sm font-medium leading-snug">
+                  {q.label} {q.required && <span className="text-destructive">*</span>}
+                </Label>
+                <Textarea
+                  placeholder="Your answer..."
+                  value={textAnswers[q.key] || ''}
+                  onChange={(e) => setTextAnswer(q.key, e.target.value)}
+                  rows={3}
+                />
+              </div>
+            )
           ))}
 
           {/* Improvement Suggestion */}
