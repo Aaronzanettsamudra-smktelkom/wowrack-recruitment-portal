@@ -1,27 +1,39 @@
 import { useSyncExternalStore } from 'react';
 
+export type SurveyQuestionType = 'rating' | 'text';
+
 export interface SurveyQuestion {
   id: string;
   key: string;
   label: string;
+  type: SurveyQuestionType;
+  required: boolean;
 }
 
 const DEFAULT_QUESTIONS: SurveyQuestion[] = [
-  { id: 'q1', key: 'easyApplication', label: 'The job application process was easy.' },
-  { id: 'q2', key: 'wellOrganized', label: 'The recruitment process felt well-organized and easy to follow.' },
-  { id: 'q3', key: 'timelyCommunication', label: 'Communication from the recruitment team was timely and clear.' },
-  { id: 'q4', key: 'supportiveRecruiter', label: 'The recruiter was supportive, professional, and helpful throughout the process.' },
-  { id: 'q5', key: 'feltRespected', label: 'I felt respected and valued as a candidate during the recruitment process.' },
-  { id: 'q6', key: 'fairInterview', label: 'The interview and assessment process felt fair and relevant to the role.' },
-  { id: 'q7', key: 'clearUnderstanding', label: 'I gained a clear understanding of the role and expectations during the recruitment process.' },
-  { id: 'q8', key: 'wouldApplyAgain', label: 'Based on this experience, I would consider applying for future opportunities at Wowrack.' },
-  { id: 'q9', key: 'wouldRecommend', label: 'I would recommend applying to Wowrack to a friend or colleague.' },
+  { id: 'q1', key: 'easyApplication', label: 'The job application process was easy.', type: 'rating', required: true },
+  { id: 'q2', key: 'wellOrganized', label: 'The recruitment process felt well-organized and easy to follow.', type: 'rating', required: true },
+  { id: 'q3', key: 'timelyCommunication', label: 'Communication from the recruitment team was timely and clear.', type: 'rating', required: true },
+  { id: 'q4', key: 'supportiveRecruiter', label: 'The recruiter was supportive, professional, and helpful throughout the process.', type: 'rating', required: true },
+  { id: 'q5', key: 'feltRespected', label: 'I felt respected and valued as a candidate during the recruitment process.', type: 'rating', required: true },
+  { id: 'q6', key: 'fairInterview', label: 'The interview and assessment process felt fair and relevant to the role.', type: 'rating', required: true },
+  { id: 'q7', key: 'clearUnderstanding', label: 'I gained a clear understanding of the role and expectations during the recruitment process.', type: 'rating', required: true },
+  { id: 'q8', key: 'wouldApplyAgain', label: 'Based on this experience, I would consider applying for future opportunities at Wowrack.', type: 'rating', required: true },
+  { id: 'q9', key: 'wouldRecommend', label: 'I would recommend applying to Wowrack to a friend or colleague.', type: 'rating', required: true },
 ];
 
 function loadQuestions(): SurveyQuestion[] {
   try {
     const stored = localStorage.getItem('surveyQuestions');
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      const parsed = JSON.parse(stored) as any[];
+      // Migrate old questions without type/required
+      return parsed.map((q) => ({
+        ...q,
+        type: q.type || 'rating',
+        required: q.required !== undefined ? q.required : true,
+      }));
+    }
   } catch {}
   return DEFAULT_QUESTIONS;
 }
@@ -48,15 +60,15 @@ export function setSurveyQuestions(newQuestions: SurveyQuestion[]) {
   emitChange();
 }
 
-export function addSurveyQuestion(label: string) {
+export function addSurveyQuestion(label: string, type: SurveyQuestionType = 'rating', required: boolean = true) {
   const id = `q-${Date.now()}`;
   const key = `custom_${id}`;
-  questions = [...questions, { id, key, label }];
+  questions = [...questions, { id, key, label, type, required }];
   emitChange();
 }
 
-export function updateSurveyQuestion(id: string, label: string) {
-  questions = questions.map((q) => (q.id === id ? { ...q, label } : q));
+export function updateSurveyQuestion(id: string, updates: Partial<Pick<SurveyQuestion, 'label' | 'type' | 'required'>>) {
+  questions = questions.map((q) => (q.id === id ? { ...q, ...updates } : q));
   emitChange();
 }
 

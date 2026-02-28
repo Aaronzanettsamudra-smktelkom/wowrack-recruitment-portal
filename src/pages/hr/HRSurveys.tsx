@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useSurveys, SurveyResponse } from '@/lib/surveyStore';
-import { useSurveyQuestions, addSurveyQuestion, updateSurveyQuestion, removeSurveyQuestion, reorderSurveyQuestions } from '@/lib/surveyQuestionStore';
+import { useSurveyQuestions, addSurveyQuestion, updateSurveyQuestion, removeSurveyQuestion, reorderSurveyQuestions, SurveyQuestionType } from '@/lib/surveyQuestionStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Search, Star, Eye, ClipboardList, TrendingUp, Settings, Plus, Trash2, ArrowUp, ArrowDown, Pencil, Check, X } from 'lucide-react';
 
 function RatingBar({ value, label }: { value: number; label: string }) {
@@ -42,6 +43,8 @@ export default function HRSurveys() {
   // Question editor state
   const [editorOpen, setEditorOpen] = useState(false);
   const [newQuestionLabel, setNewQuestionLabel] = useState('');
+  const [newQuestionType, setNewQuestionType] = useState<SurveyQuestionType>('rating');
+  const [newQuestionRequired, setNewQuestionRequired] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState('');
 
@@ -62,8 +65,8 @@ export default function HRSurveys() {
     return result;
   }, [surveys, search, stageFilter]);
 
-  const ratingKeys = surveyQuestions.map((q) => q.key);
-  const questionLabelMap = Object.fromEntries(surveyQuestions.map((q) => [q.key, q.label]));
+  const ratingQuestions = surveyQuestions.filter((q) => q.type === 'rating');
+  const ratingKeys = ratingQuestions.map((q) => q.key);
 
   const avgOverall = surveys.length
     ? (surveys.reduce((sum, s) => {
@@ -99,8 +102,10 @@ export default function HRSurveys() {
 
   const handleAddQuestion = () => {
     if (!newQuestionLabel.trim()) return;
-    addSurveyQuestion(newQuestionLabel.trim());
+    addSurveyQuestion(newQuestionLabel.trim(), newQuestionType, newQuestionRequired);
     setNewQuestionLabel('');
+    setNewQuestionType('rating');
+    setNewQuestionRequired(true);
   };
 
   const handleStartEdit = (id: string, label: string) => {
@@ -110,7 +115,7 @@ export default function HRSurveys() {
 
   const handleSaveEdit = () => {
     if (editingId && editingLabel.trim()) {
-      updateSurveyQuestion(editingId, editingLabel.trim());
+      updateSurveyQuestion(editingId, { label: editingLabel.trim() });
     }
     setEditingId(null);
     setEditingLabel('');
@@ -160,7 +165,7 @@ export default function HRSurveys() {
         </CardContent>
       </Card>
 
-      {/* Stats - removed avg recommend, kept 2 */}
+      {/* Stats */}
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
@@ -275,12 +280,20 @@ export default function HRSurveys() {
               </div>
 
               <Separator />
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Ratings</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Responses</p>
               <div className="space-y-3">
                 {surveyQuestions.map((q) => {
-                  const val = (selected as any)[q.key] as number;
-                  if (!val) return null;
-                  return <RatingBar key={q.key} label={q.label} value={val} />;
+                  const val = (selected as any)[q.key];
+                  if (val === undefined || val === null || val === '') return null;
+                  if (q.type === 'rating') {
+                    return <RatingBar key={q.key} label={q.label} value={val as number} />;
+                  }
+                  return (
+                    <div key={q.key} className="space-y-1">
+                      <span className="text-sm text-muted-foreground">{q.label}</span>
+                      <p className="text-sm bg-muted/50 rounded-lg p-3">{val as string}</p>
+                    </div>
+                  );
                 })}
               </div>
 
@@ -330,8 +343,36 @@ export default function HRSurveys() {
                   </div>
                 ) : (
                   <>
-                    <span className="flex-1 text-sm leading-relaxed">{q.label}</span>
+                    <div className="flex-1 space-y-1.5">
+                      <span className="text-sm leading-relaxed block">{q.label}</span>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                          {q.type === 'rating' ? 'Rating 1–10' : 'Text Field'}
+                        </Badge>
+                        <div className="flex items-center gap-1.5">
+                          <Switch
+                            checked={q.required}
+                            onCheckedChange={(checked) => updateSurveyQuestion(q.id, { required: checked })}
+                            className="scale-75"
+                          />
+                          <span className="text-[10px] text-muted-foreground">{q.required ? 'Required' : 'Optional'}</span>
+                        </div>
+                      </div>
+                    </div>
                     <div className="flex items-center gap-0.5 shrink-0">
+                      {/* Type toggle */}
+                      <Select
+                        value={q.type}
+                        onValueChange={(v) => updateSurveyQuestion(q.id, { type: v as SurveyQuestionType })}
+                      >
+                        <SelectTrigger className="h-7 w-[80px] text-[10px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="rating">Rating</SelectItem>
+                          <SelectItem value="text">Text</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <Button variant="ghost" size="icon" className="h-7 w-7" disabled={idx === 0} onClick={() => reorderSurveyQuestions(idx, idx - 1)}>
                         <ArrowUp className="h-3.5 w-3.5" />
                       </Button>
@@ -359,7 +400,23 @@ export default function HRSurveys() {
                   value={newQuestionLabel}
                   onChange={(e) => setNewQuestionLabel(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddQuestion()}
+                  className="flex-1"
                 />
+                <Select value={newQuestionType} onValueChange={(v) => setNewQuestionType(v as SurveyQuestionType)}>
+                  <SelectTrigger className="w-[90px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="rating">Rating</SelectItem>
+                    <SelectItem value="text">Text</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Switch checked={newQuestionRequired} onCheckedChange={setNewQuestionRequired} />
+                  <span className="text-sm text-muted-foreground">{newQuestionRequired ? 'Required' : 'Optional'}</span>
+                </div>
                 <Button onClick={handleAddQuestion} disabled={!newQuestionLabel.trim()}>
                   <Plus className="h-4 w-4 mr-1" /> Add
                 </Button>
