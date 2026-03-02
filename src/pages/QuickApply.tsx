@@ -287,13 +287,12 @@ export default function QuickApply() {
             </div>
 
             <div className="space-y-2">
-              <Label>Pengalaman Kerja Terakhir *</Label>
+              <Label>Pengalaman Kerja Terakhir</Label>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="lastRole" className="text-xs text-muted-foreground">Posisi/Role</Label>
                   <Input
                     id="lastRole"
-                    required
                     value={formData.lastRole}
                     onChange={(e) => setFormData({ ...formData, lastRole: e.target.value })}
                     placeholder="Frontend Developer"
@@ -303,7 +302,6 @@ export default function QuickApply() {
                   <Label htmlFor="lastCompany" className="text-xs text-muted-foreground">Perusahaan</Label>
                   <Input
                     id="lastCompany"
-                    required
                     value={formData.lastCompany}
                     onChange={(e) => setFormData({ ...formData, lastCompany: e.target.value })}
                     placeholder="PT Contoh Indonesia"
@@ -316,7 +314,6 @@ export default function QuickApply() {
                   <Input
                     id="lastWorkFrom"
                     type="month"
-                    required
                     value={formData.lastWorkFrom}
                     onChange={(e) => setFormData({ ...formData, lastWorkFrom: e.target.value })}
                   />
@@ -326,7 +323,6 @@ export default function QuickApply() {
                   <Input
                     id="lastWorkTo"
                     type="month"
-                    required
                     value={formData.lastWorkTo}
                     onChange={(e) => setFormData({ ...formData, lastWorkTo: e.target.value })}
                   />
@@ -390,7 +386,7 @@ export default function QuickApply() {
                           setUniversitySearch(e.target.value);
                           setSelectedUniversity("");
                         }}
-                        placeholder="Cari nama universitas..."
+                        placeholder="Cari atau ketik nama universitas..."
                         className="pl-9"
                       />
                     </div>
@@ -414,6 +410,11 @@ export default function QuickApply() {
                           </button>
                         ))}
                       </div>
+                    )}
+                    {universitySearch.length >= 2 && filteredUniversities.length === 0 && !selectedUniversity && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Universitas tidak ditemukan di daftar. Nama yang Anda ketik akan digunakan: <span className="text-foreground font-medium">{universitySearch}</span>
+                      </p>
                     )}
                   </div>
                 </div>
