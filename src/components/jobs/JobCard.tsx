@@ -37,7 +37,6 @@ export function JobCard({ job, index = 0 }: JobCardProps) {
             {job.location}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="text-xs font-semibold">Rp</span>
             {job.salary}
           </span>
         </div>
