@@ -79,7 +79,7 @@ export default function QuickApply() {
   }, [formData.provinceId]);
 
   useEffect(() => {
-    if (universitySearch.length < 2) {
+    if (universitySearch.length < 2 || selectedUniversity) {
       setFilteredUniversities([]);
       setShowUniversityDropdown(false);
       return;
@@ -88,7 +88,7 @@ export default function QuickApply() {
     const results = universityList.filter((u) => u.toLowerCase().includes(query)).slice(0, 20);
     setFilteredUniversities(results);
     setShowUniversityDropdown(results.length > 0);
-  }, [universitySearch]);
+  }, [universitySearch, selectedUniversity]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
