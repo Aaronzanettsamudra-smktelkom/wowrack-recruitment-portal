@@ -16,8 +16,8 @@ interface MPPFormData {
   responsibilities: string;
   requirements: string;
   
-  salaryMin: number;
-  salaryMax: number;
+  salaryMin: string;
+  salaryMax: string;
   quantity: number;
   priority: 'high' | 'medium' | 'low';
   justification: string;
@@ -38,8 +38,8 @@ const initialFormData: MPPFormData = {
   responsibilities: '',
   requirements: '',
   
-  salaryMin: 0,
-  salaryMax: 0,
+  salaryMin: '',
+  salaryMax: '',
   quantity: 1,
   priority: 'medium',
   justification: '',
@@ -79,15 +79,28 @@ export default function HiringManagerMPP() {
     }
   }, [formData.provinceId]);
 
+  const parseRupiah = (value: string): number => {
+    return Number(value.replace(/\D/g, '')) || 0;
+  };
+
+  const formatRupiah = (value: string): string => {
+    const num = Number(value.replace(/\D/g, ''));
+    if (!num) return '';
+    return num.toLocaleString('id-ID');
+  };
+
+  const handleSalaryChange = (field: 'salaryMin' | 'salaryMax', raw: string) => {
+    const digits = raw.replace(/\D/g, '');
+    setFormData((prev) => ({ ...prev, [field]: digits }));
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'quantity' || name === 'salaryMin' || name === 'salaryMax' 
-        ? Number(value) 
-        : value,
+      [name]: name === 'quantity' ? Number(value) : value,
     }));
   };
 
@@ -112,7 +125,10 @@ export default function HiringManagerMPP() {
       return;
     }
 
-    if (formData.salaryMin > formData.salaryMax) {
+    const salaryMinNum = parseRupiah(formData.salaryMin);
+    const salaryMaxNum = parseRupiah(formData.salaryMax);
+
+    if (salaryMinNum > salaryMaxNum && salaryMaxNum > 0) {
       toast({
         title: "Validation Error",
         description: "Minimum salary cannot exceed maximum salary.",
@@ -333,28 +349,34 @@ export default function HiringManagerMPP() {
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="salaryMin">Salary Range (Min)</Label>
-                <Input
-                  id="salaryMin"
-                  name="salaryMin"
-                  type="number"
-                  min="0"
-                  value={formData.salaryMin}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 15000000"
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">Rp</span>
+                  <Input
+                    id="salaryMin"
+                    type="text"
+                    inputMode="numeric"
+                    value={formatRupiah(formData.salaryMin)}
+                    onChange={(e) => handleSalaryChange('salaryMin', e.target.value)}
+                    placeholder="15.000.000"
+                    className="pl-10"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="salaryMax">Salary Range (Max)</Label>
-                <Input
-                  id="salaryMax"
-                  name="salaryMax"
-                  type="number"
-                  min="0"
-                  value={formData.salaryMax}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 25000000"
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">Rp</span>
+                  <Input
+                    id="salaryMax"
+                    type="text"
+                    inputMode="numeric"
+                    value={formatRupiah(formData.salaryMax)}
+                    onChange={(e) => handleSalaryChange('salaryMax', e.target.value)}
+                    placeholder="25.000.000"
+                    className="pl-10"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
