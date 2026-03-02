@@ -83,8 +83,9 @@ export default function HiringManagerMPP() {
     return Number(value.replace(/\D/g, '')) || 0;
   };
 
-  const formatRupiah = (value: string): string => {
-    const num = Number(value.replace(/\D/g, ''));
+  const formatRupiah = (value: string | number): string => {
+    const str = String(value ?? '');
+    const num = Number(str.replace(/\D/g, ''));
     if (!num) return '';
     return num.toLocaleString('id-ID');
   };
