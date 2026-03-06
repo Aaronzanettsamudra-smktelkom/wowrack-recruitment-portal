@@ -89,7 +89,15 @@ export default function CandidateLogin() {
             </Button>
           </form>
 
-          <div className="mt-8 text-center space-y-4">
+          <div className="mt-6 p-4 rounded-lg bg-muted/50 border">
+            <p className="text-xs font-medium text-muted-foreground mb-2">Demo account:</p>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <p><span className="font-medium">Email:</span> sarah.wijaya@email.com</p>
+              <p><span className="font-medium">Password:</span> any password</p>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center space-y-4">
             <Link 
               to="/forgot-password" 
               className="text-sm text-muted-foreground hover:text-primary block"
