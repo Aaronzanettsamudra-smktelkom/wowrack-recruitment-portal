@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
+import { Link, useLocation, Outlet, Navigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, User, LogOut, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { mockCandidateProfile } from '@/lib/mockCandidateData';
+import { useCandidateAuth } from '@/contexts/CandidateAuthContext';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -15,6 +15,11 @@ const navItems = [
 export default function CandidateLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { candidate, logout, isLoggedIn } = useCandidateAuth();
+
+  if (!isLoggedIn) {
+    return <Navigate to="/candidate-login" replace />;
+  }
 
   const isActive = (href: string) => {
     if (href === '/candidate') {
@@ -69,14 +74,14 @@ export default function CandidateLayout() {
           <div className="p-4 border-b">
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={mockCandidateProfile.avatarUrl} />
+                <AvatarImage src={candidate?.avatarUrl} />
                 <AvatarFallback>
-                  {mockCandidateProfile.fullName.split(' ').map(n => n[0]).join('')}
+                  {candidate?.fullName.split(' ').map(n => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm truncate">{mockCandidateProfile.fullName}</p>
-                <p className="text-xs text-muted-foreground truncate">{mockCandidateProfile.email}</p>
+                <p className="font-medium text-sm truncate">{candidate?.fullName}</p>
+                <p className="text-xs text-muted-foreground truncate">{candidate?.email}</p>
               </div>
             </div>
           </div>
@@ -103,12 +108,16 @@ export default function CandidateLayout() {
 
           {/* Logout */}
           <div className="p-4 border-t">
-            <Link to="/">
-              <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-                <LogOut className="h-5 w-5 mr-3" />
-                Logout
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-muted-foreground"
+              onClick={() => {
+                logout();
+              }}
+            >
+              <LogOut className="h-5 w-5 mr-3" />
+              Logout
+            </Button>
           </div>
         </div>
       </aside>
