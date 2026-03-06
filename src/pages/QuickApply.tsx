@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Upload, Check, Loader2, Search } from "lucide-react";
+import { ArrowLeft, Upload, Check, Loader2, Search, UserPlus, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { jobs } from "@/lib/mockData";
 import { universities as universityList } from "@/lib/universityData";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useCandidateAuth } from "@/contexts/CandidateAuthContext";
 
 interface Province {
   id: string;
@@ -29,9 +30,11 @@ export default function QuickApply() {
   const { id } = useParams();
   const navigate = useNavigate();
   const job = jobs.find((j) => j.id === id);
+  const { candidate, isLoggedIn, register } = useCandidateAuth();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -113,6 +116,36 @@ export default function QuickApply() {
     );
   }
 
+  const handleAutofill = () => {
+    if (!candidate) return;
+    setFormData((prev) => ({
+      ...prev,
+      fullName: candidate.fullName,
+      email: candidate.email,
+      whatsapp: candidate.phone,
+      linkedIn: candidate.linkedinUrl,
+    }));
+    toast.success("Form autofilled with your profile data!");
+  };
+
+  const handleCreateAccountAndSubmit = async () => {
+    if (!formData.fullName || !formData.email) {
+      toast.error("Please fill in at least your name and email");
+      return;
+    }
+    setIsCreatingAccount(true);
+    await register({
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.whatsapp,
+      linkedinUrl: formData.linkedIn,
+    });
+    setIsCreatingAccount(false);
+    toast.success("Account created! You can now track this application in your dashboard.");
+  };
+
+  const isFormFilled = formData.fullName && formData.email && formData.whatsapp;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -192,6 +225,58 @@ export default function QuickApply() {
       {/* Form */}
       <section className="py-12">
         <div className="container max-w-2xl">
+          {/* Autofill / Create Account Banner */}
+          {isLoggedIn && candidate ? (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Zap className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Welcome back, {candidate.fullName}!</p>
+                  <p className="text-xs text-muted-foreground">Autofill the form with your profile data</p>
+                </div>
+              </div>
+              <Button size="sm" onClick={handleAutofill} variant="outline" className="shrink-0">
+                <Zap className="h-4 w-4 mr-1" />
+                Autofill
+              </Button>
+            </motion.div>
+          ) : !isLoggedIn && isFormFilled ? (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-accent/50 border border-accent rounded-xl p-4 flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center">
+                  <UserPlus className="h-5 w-5 text-accent-foreground" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Want to track your application?</p>
+                  <p className="text-xs text-muted-foreground">Create an account to monitor your status in the candidate portal</p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                onClick={handleCreateAccountAndSubmit}
+                disabled={isCreatingAccount}
+                className="shrink-0"
+              >
+                {isCreatingAccount ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                ) : (
+                  <UserPlus className="h-4 w-4 mr-1" />
+                )}
+                {isCreatingAccount ? "Creating..." : "Create Account"}
+              </Button>
+            </motion.div>
+          ) : null}
+
           <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
