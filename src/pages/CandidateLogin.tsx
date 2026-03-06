@@ -7,9 +7,11 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import logoWowrack from "@/assets/wowrack-logo.png";
+import { useCandidateAuth } from "@/contexts/CandidateAuthContext";
 
 export default function CandidateLogin() {
   const navigate = useNavigate();
+  const { login } = useCandidateAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -17,11 +19,15 @@ export default function CandidateLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const success = await login(email, password);
     setIsLoading(false);
 
-    toast.success("Login successful!");
-    navigate("/candidate");
+    if (success) {
+      toast.success("Login successful!");
+      navigate("/candidate");
+    } else {
+      toast.error("Invalid email or password. Try: andi.prasetyo@email.com");
+    }
   };
 
   return (
