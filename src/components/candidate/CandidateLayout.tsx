@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, Outlet, Navigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, User, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, FileText, User, LogOut, Menu, X, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useCandidateAuth } from '@/contexts/CandidateAuthContext';
@@ -10,6 +10,7 @@ const navItems = [
   { label: 'Dashboard', href: '/candidate', icon: LayoutDashboard },
   { label: 'My Applications', href: '/candidate/applications', icon: FileText },
   { label: 'Profile', href: '/candidate/profile', icon: User },
+  { label: 'Explore Careers', href: '/careers', icon: Compass },
 ];
 
 export default function CandidateLayout() {
