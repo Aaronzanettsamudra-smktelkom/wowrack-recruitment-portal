@@ -157,10 +157,13 @@ export default function HRNewsManagement() {
   const [deleteNews, setDeleteNews] = useState<NewsArticle | null>(null);
   const [formData, setFormData] = useState({
     title: '',
+    excerpt: '',
     content: '',
     category: '',
     publishDate: '',
     status: 'draft' as 'draft' | 'published' | 'archived',
+    coverImage: '',
+    album: [] as string[],
   });
   const { toast } = useToast();
 
@@ -176,10 +179,13 @@ export default function HRNewsManagement() {
     setEditingNews(null);
     setFormData({
       title: '',
+      excerpt: '',
       content: '',
       category: '',
       publishDate: new Date().toISOString().split('T')[0],
       status: 'draft',
+      coverImage: '',
+      album: [],
     });
     setShowDialog(true);
   };
@@ -188,10 +194,13 @@ export default function HRNewsManagement() {
     setEditingNews(item);
     setFormData({
       title: item.title,
+      excerpt: item.excerpt,
       content: item.content,
       category: item.category,
       publishDate: item.publishDate,
       status: item.status,
+      coverImage: item.coverImage,
+      album: item.album,
     });
     setShowDialog(true);
   };
@@ -199,6 +208,40 @@ export default function HRNewsManagement() {
   const openDetailDialog = (item: NewsArticle) => {
     setViewingNews(item);
     setShowDetailDialog(true);
+  };
+
+  const readFileAsDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast({ title: 'Invalid file', description: 'Please upload an image file.', variant: 'destructive' });
+      return;
+    }
+    const dataUrl = await readFileAsDataUrl(file);
+    setFormData(prev => ({ ...prev, coverImage: dataUrl }));
+    e.target.value = '';
+  };
+
+  const handleAlbumUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    const images = await Promise.all(
+      files.filter(f => f.type.startsWith('image/')).map(readFileAsDataUrl)
+    );
+    setFormData(prev => ({ ...prev, album: [...prev.album, ...images] }));
+    e.target.value = '';
+  };
+
+  const removeAlbumImage = (index: number) => {
+    setFormData(prev => ({ ...prev, album: prev.album.filter((_, i) => i !== index) }));
   };
 
   const handleSave = () => {
