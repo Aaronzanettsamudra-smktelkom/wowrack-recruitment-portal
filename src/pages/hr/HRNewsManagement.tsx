@@ -438,7 +438,7 @@ export default function HRNewsManagement() {
               ))}
               {filteredNews.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                     No content found
                   </TableCell>
                 </TableRow>
@@ -462,9 +462,34 @@ export default function HRNewsManagement() {
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 space-y-4">
+            {viewingNews?.coverImage && (
+              <img
+                src={viewingNews.coverImage}
+                alt={viewingNews.title}
+                className="w-full aspect-video object-cover rounded-lg border border-border"
+              />
+            )}
+            {viewingNews?.excerpt && (
+              <p className="text-sm text-muted-foreground italic">{viewingNews.excerpt}</p>
+            )}
             <div className="prose prose-sm max-w-none">
               <p className="text-foreground whitespace-pre-wrap">{viewingNews?.content}</p>
             </div>
+            {viewingNews && viewingNews.album.length > 0 && (
+              <div className="space-y-2 pt-4 border-t">
+                <Label className="text-sm">Album ({viewingNews.album.length} photos)</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {viewingNews.album.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt={`Album ${i + 1}`}
+                      className="w-full aspect-square object-cover rounded-md border border-border"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4 border-t">
               <span className="flex items-center gap-1">
                 <Eye className="h-4 w-4" />
