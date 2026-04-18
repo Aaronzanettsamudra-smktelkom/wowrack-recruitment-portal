@@ -375,6 +375,7 @@ export default function HRNewsManagement() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-20">Cover</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Publish Date</TableHead>
@@ -387,9 +388,21 @@ export default function HRNewsManagement() {
               {filteredNews.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
+                    {item.coverImage ? (
+                      <img src={item.coverImage} alt={item.title} className="h-12 w-16 object-cover rounded border border-border" />
+                    ) : (
+                      <div className="h-12 w-16 rounded border border-border bg-muted flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
                     <div>
                       <p className="font-medium line-clamp-1">{item.title}</p>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{item.content.substring(0, 60)}...</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">
+                        {item.excerpt || `${item.content.substring(0, 60)}...`}
+                        {item.album.length > 0 && ` • ${item.album.length} album photo${item.album.length > 1 ? 's' : ''}`}
+                      </p>
                     </div>
                   </TableCell>
                   <TableCell>
