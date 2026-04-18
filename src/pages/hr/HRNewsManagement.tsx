@@ -6,7 +6,10 @@ import {
   Search,
   Eye,
   Calendar,
-  User
+  User,
+  Upload,
+  X as XIcon,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,67 +55,91 @@ import { useToast } from '@/hooks/use-toast';
 interface NewsArticle {
   id: string;
   title: string;
+  excerpt: string;
   content: string;
   category: string;
   publishDate: string;
   status: 'draft' | 'published' | 'archived';
   views: number;
+  coverImage: string;
+  album: string[];
 }
 
 const initialNews: NewsArticle[] = [
   {
     id: 'news-1',
     title: 'TechCorp Indonesia Raih Penghargaan Best Workplace 2025',
+    excerpt: 'Penghargaan bergengsi atas komitmen menciptakan lingkungan kerja inklusif dan inovatif.',
     content: 'TechCorp Indonesia berhasil meraih penghargaan Best Workplace 2025 dari Great Place to Work Institute. Penghargaan ini diberikan atas komitmen perusahaan dalam menciptakan lingkungan kerja yang inklusif, inovatif, dan mendukung kesejahteraan karyawan.',
     category: 'News',
     publishDate: '2025-01-15',
     status: 'published',
     views: 1250,
+    coverImage: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop',
+    album: [],
   },
   {
     id: 'news-2',
     title: 'Peluncuran Program Beasiswa Karyawan 2025',
+    excerpt: 'Mendukung pengembangan kompetensi melalui beasiswa pendidikan lanjutan.',
     content: 'Dalam rangka mendukung pengembangan kompetensi, perusahaan meluncurkan program beasiswa untuk karyawan yang ingin melanjutkan pendidikan. Program ini mencakup biaya kuliah penuh dan tunjangan belajar.',
     category: 'News',
     publishDate: '2025-01-10',
     status: 'published',
     views: 890,
+    coverImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop',
+    album: [],
   },
   {
     id: 'culture-1',
     title: 'Family Day 2025 - Kebersamaan dan Keceriaan',
+    excerpt: 'Acara tahunan penuh keceriaan untuk karyawan dan keluarga.',
     content: 'Acara Family Day tahunan sukses diselenggarakan dengan berbagai kegiatan menarik untuk karyawan dan keluarga. Berbagai permainan, doorprize, dan pertunjukan menghibur peserta sepanjang hari.',
     category: 'Culture',
     publishDate: '2025-01-20',
     status: 'published',
     views: 750,
+    coverImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop',
+    album: [
+      'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
+    ],
   },
   {
     id: 'culture-2',
     title: 'Values Champion Program - Menghargai Budaya Perusahaan',
+    excerpt: 'Mengapresiasi karyawan yang menjadi teladan nilai-nilai perusahaan.',
     content: 'Program Values Champion diluncurkan untuk menghargai karyawan yang menjadi teladan dalam menjalankan nilai-nilai perusahaan. Setiap bulan, karyawan terpilih akan mendapatkan penghargaan khusus.',
     category: 'Culture',
     publishDate: '2025-01-25',
     status: 'published',
     views: 620,
+    coverImage: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=600&h=400&fit=crop',
+    album: [],
   },
   {
     id: 'news-3',
     title: 'Kebijakan Hybrid Working Diperpanjang',
+    excerpt: 'Kerja fleksibel berlanjut hingga akhir 2025 berdasarkan evaluasi positif.',
     content: 'Berdasarkan evaluasi positif dari implementasi hybrid working, kebijakan kerja fleksibel akan terus berlaku hingga akhir 2025. Karyawan dapat memilih jadwal kerja yang sesuai dengan kebutuhan.',
     category: 'News',
     publishDate: '2025-01-05',
     status: 'published',
     views: 2100,
+    coverImage: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop',
+    album: [],
   },
   {
     id: 'news-4',
     title: 'Rencana Ekspansi Regional Q2 2025',
+    excerpt: 'Pembukaan kantor baru di beberapa kota besar Indonesia.',
     content: 'Sebagai bagian dari strategi pertumbuhan, perusahaan berencana membuka kantor baru di beberapa kota besar di Indonesia pada kuartal kedua tahun ini.',
     category: 'News',
     publishDate: '2025-02-01',
     status: 'draft',
     views: 0,
+    coverImage: '',
+    album: [],
   },
 ];
 
@@ -130,10 +157,13 @@ export default function HRNewsManagement() {
   const [deleteNews, setDeleteNews] = useState<NewsArticle | null>(null);
   const [formData, setFormData] = useState({
     title: '',
+    excerpt: '',
     content: '',
     category: '',
     publishDate: '',
     status: 'draft' as 'draft' | 'published' | 'archived',
+    coverImage: '',
+    album: [] as string[],
   });
   const { toast } = useToast();
 
@@ -149,10 +179,13 @@ export default function HRNewsManagement() {
     setEditingNews(null);
     setFormData({
       title: '',
+      excerpt: '',
       content: '',
       category: '',
       publishDate: new Date().toISOString().split('T')[0],
       status: 'draft',
+      coverImage: '',
+      album: [],
     });
     setShowDialog(true);
   };
@@ -161,10 +194,13 @@ export default function HRNewsManagement() {
     setEditingNews(item);
     setFormData({
       title: item.title,
+      excerpt: item.excerpt,
       content: item.content,
       category: item.category,
       publishDate: item.publishDate,
       status: item.status,
+      coverImage: item.coverImage,
+      album: item.album,
     });
     setShowDialog(true);
   };
@@ -172,6 +208,40 @@ export default function HRNewsManagement() {
   const openDetailDialog = (item: NewsArticle) => {
     setViewingNews(item);
     setShowDetailDialog(true);
+  };
+
+  const readFileAsDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast({ title: 'Invalid file', description: 'Please upload an image file.', variant: 'destructive' });
+      return;
+    }
+    const dataUrl = await readFileAsDataUrl(file);
+    setFormData(prev => ({ ...prev, coverImage: dataUrl }));
+    e.target.value = '';
+  };
+
+  const handleAlbumUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    const images = await Promise.all(
+      files.filter(f => f.type.startsWith('image/')).map(readFileAsDataUrl)
+    );
+    setFormData(prev => ({ ...prev, album: [...prev.album, ...images] }));
+    e.target.value = '';
+  };
+
+  const removeAlbumImage = (index: number) => {
+    setFormData(prev => ({ ...prev, album: prev.album.filter((_, i) => i !== index) }));
   };
 
   const handleSave = () => {
@@ -305,6 +375,7 @@ export default function HRNewsManagement() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-20">Cover</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Publish Date</TableHead>
@@ -317,9 +388,21 @@ export default function HRNewsManagement() {
               {filteredNews.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
+                    {item.coverImage ? (
+                      <img src={item.coverImage} alt={item.title} className="h-12 w-16 object-cover rounded border border-border" />
+                    ) : (
+                      <div className="h-12 w-16 rounded border border-border bg-muted flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
                     <div>
                       <p className="font-medium line-clamp-1">{item.title}</p>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{item.content.substring(0, 60)}...</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">
+                        {item.excerpt || `${item.content.substring(0, 60)}...`}
+                        {item.album.length > 0 && ` • ${item.album.length} album photo${item.album.length > 1 ? 's' : ''}`}
+                      </p>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -355,7 +438,7 @@ export default function HRNewsManagement() {
               ))}
               {filteredNews.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                     No content found
                   </TableCell>
                 </TableRow>
@@ -379,9 +462,34 @@ export default function HRNewsManagement() {
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 space-y-4">
+            {viewingNews?.coverImage && (
+              <img
+                src={viewingNews.coverImage}
+                alt={viewingNews.title}
+                className="w-full aspect-video object-cover rounded-lg border border-border"
+              />
+            )}
+            {viewingNews?.excerpt && (
+              <p className="text-sm text-muted-foreground italic">{viewingNews.excerpt}</p>
+            )}
             <div className="prose prose-sm max-w-none">
               <p className="text-foreground whitespace-pre-wrap">{viewingNews?.content}</p>
             </div>
+            {viewingNews && viewingNews.album.length > 0 && (
+              <div className="space-y-2 pt-4 border-t">
+                <Label className="text-sm">Album ({viewingNews.album.length} photos)</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {viewingNews.album.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt={`Album ${i + 1}`}
+                      className="w-full aspect-square object-cover rounded-md border border-border"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4 border-t">
               <span className="flex items-center gap-1">
                 <Eye className="h-4 w-4" />
@@ -412,6 +520,42 @@ export default function HRNewsManagement() {
               />
             </div>
 
+            {/* Cover Image */}
+            <div className="space-y-2">
+              <Label>Cover Image</Label>
+              {formData.coverImage ? (
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-muted">
+                  <img src={formData.coverImage} alt="Cover preview" className="w-full h-full object-cover" />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8"
+                    onClick={() => setFormData(prev => ({ ...prev, coverImage: '' }))}
+                  >
+                    <XIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/50 transition-colors">
+                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                  <span className="text-sm text-muted-foreground">Click to upload cover image</span>
+                  <span className="text-xs text-muted-foreground mt-1">PNG, JPG up to ~5MB</span>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+                </label>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Excerpt</Label>
+              <Textarea
+                value={formData.excerpt}
+                onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                placeholder="Short summary shown on listing pages..."
+                rows={2}
+              />
+            </div>
+
             <div className="space-y-2">
               <Label>Content *</Label>
               <Textarea
@@ -420,6 +564,38 @@ export default function HRNewsManagement() {
                 placeholder="Enter content..."
                 rows={8}
               />
+            </div>
+
+            {/* Album / Gallery */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Album / Gallery ({formData.album.length})</Label>
+                <label className="inline-flex items-center gap-2 text-sm text-primary hover:underline cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  Add photos
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={handleAlbumUpload} />
+                </label>
+              </div>
+              {formData.album.length > 0 ? (
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {formData.album.map((img, i) => (
+                    <div key={i} className="relative group aspect-square rounded-md overflow-hidden border border-border">
+                      <img src={img} alt={`Album ${i + 1}`} className="w-full h-full object-cover" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeAlbumImage(i)}
+                      >
+                        <XIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">No photos in album yet. Use "Add photos" to upload multiple images for this activity.</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
