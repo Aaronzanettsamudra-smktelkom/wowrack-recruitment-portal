@@ -6,7 +6,10 @@ import {
   Search,
   Eye,
   Calendar,
-  User
+  User,
+  Upload,
+  X as XIcon,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,11 +55,14 @@ import { useToast } from '@/hooks/use-toast';
 interface NewsArticle {
   id: string;
   title: string;
+  excerpt: string;
   content: string;
   category: string;
   publishDate: string;
   status: 'draft' | 'published' | 'archived';
   views: number;
+  coverImage: string;
+  album: string[];
 }
 
 const initialNews: NewsArticle[] = [
