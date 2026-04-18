@@ -520,6 +520,42 @@ export default function HRNewsManagement() {
               />
             </div>
 
+            {/* Cover Image */}
+            <div className="space-y-2">
+              <Label>Cover Image</Label>
+              {formData.coverImage ? (
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-muted">
+                  <img src={formData.coverImage} alt="Cover preview" className="w-full h-full object-cover" />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8"
+                    onClick={() => setFormData(prev => ({ ...prev, coverImage: '' }))}
+                  >
+                    <XIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/30 hover:bg-muted/50 transition-colors">
+                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                  <span className="text-sm text-muted-foreground">Click to upload cover image</span>
+                  <span className="text-xs text-muted-foreground mt-1">PNG, JPG up to ~5MB</span>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+                </label>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Excerpt</Label>
+              <Textarea
+                value={formData.excerpt}
+                onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                placeholder="Short summary shown on listing pages..."
+                rows={2}
+              />
+            </div>
+
             <div className="space-y-2">
               <Label>Content *</Label>
               <Textarea
@@ -528,6 +564,38 @@ export default function HRNewsManagement() {
                 placeholder="Enter content..."
                 rows={8}
               />
+            </div>
+
+            {/* Album / Gallery */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Album / Gallery ({formData.album.length})</Label>
+                <label className="inline-flex items-center gap-2 text-sm text-primary hover:underline cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  Add photos
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={handleAlbumUpload} />
+                </label>
+              </div>
+              {formData.album.length > 0 ? (
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {formData.album.map((img, i) => (
+                    <div key={i} className="relative group aspect-square rounded-md overflow-hidden border border-border">
+                      <img src={img} alt={`Album ${i + 1}`} className="w-full h-full object-cover" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeAlbumImage(i)}
+                      >
+                        <XIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">No photos in album yet. Use "Add photos" to upload multiple images for this activity.</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
